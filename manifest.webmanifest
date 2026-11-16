@@ -1,0 +1,16 @@
+{
+  "name": "Chèvra – Révisions CM2",
+  "short_name": "Chèvra",
+  "description": "Révise le programme de CM2 et prépare la 6e avec Chèvra.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffe4ef",
+  "theme_color": "#ffe4ef",
+  "lang": "fr",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
