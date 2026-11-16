@@ -154,8 +154,7 @@ body.in-game main{padding-bottom:calc(24px + var(--safe-b))}
 .dot.cur{background:var(--sun); transform:scale(1.25)}
 .dot.ok{background:#3cc59a} .dot.ko{background:#ff8fa7}
 .game-chevra{display:flex; align-items:flex-end; gap:8px; margin-bottom:10px}
-.game-chevra .chevra-host{width:88px; flex:none; max-height:130px}
-.game-chevra .chevra{max-height:130px}
+.game-chevra .chevra-host{width:130px; flex:none}
 .bubble{position:relative; background:#fff; border-radius:20px; padding:12px 14px; box-shadow:var(--shadow); font-weight:700; font-size:1rem; flex:1; margin-bottom:22px}
 .bubble::after{content:""; position:absolute; left:-10px; bottom:16px; border:10px solid transparent; border-right-color:#fff; border-left:0}
 .qcard{background:#fff; border-radius:26px; box-shadow:var(--shadow-l); padding:18px; animation:pop .35s ease}
@@ -280,23 +279,33 @@ table.ptable{width:100%; border-collapse:collapse; font-size:.95rem}
 .subj-prog{display:flex; flex-direction:column; gap:8px}
 .subj-prog .sp{display:grid; grid-template-columns:28px 1fr auto; gap:8px; align-items:center; font-size:.88rem; font-weight:700}
 
-/* ---------- Mascotte (dessin de Damien, une pose + effets légers) ---------- */
+/* ---------- Mascotte (SVG animé d'origine) ---------- */
 .chevra-host{position:relative}
 .chevra{width:100%; height:auto; display:block; overflow:visible}
-.chevra .c-think, .chevra .c-sparkles, .chevra .c-tears, .chevra .c-sweat{display:none}
-.chevra.mood-think .c-think, .chevra.mood-think .c-sweat{display:inline}
-.chevra.mood-sad .c-tears{display:inline}
-.chevra.mood-celebrate .c-sparkles{display:inline}
-.chevra .c-all{transform-origin:100px 280px; animation:idle 3.2s ease-in-out infinite}
-.chevra[data-fixed] .c-all{animation:none}
+.chevra .eyes-happy, .chevra .eyes-wink, .chevra .eyes-look, .chevra .m-big, .chevra .m-o, .chevra .m-soft,
+.chevra .c-think, .chevra .c-sparkles, .chevra .c-brows{display:none}
+.chevra.no-horns .c-horns, .chevra.no-tuft .c-tuft{display:none}
+.chevra.mood-happy .m-smile{display:none} .chevra.mood-happy .m-big{display:inline}
+.chevra.mood-celebrate .eyes-open, .chevra.mood-celebrate .m-smile{display:none}
+.chevra.mood-celebrate .eyes-happy, .chevra.mood-celebrate .m-big, .chevra.mood-celebrate .c-sparkles{display:inline}
+.chevra.mood-encourage .eyes-open{display:none} .chevra.mood-encourage .eyes-wink{display:inline}
+.chevra.mood-think .eyes-open, .chevra.mood-think .m-smile{display:none}
+.chevra.mood-think .eyes-look, .chevra.mood-think .m-o, .chevra.mood-think .c-think, .chevra.mood-think .c-brows{display:inline}
+.chevra.mood-sad .m-smile{display:none} .chevra.mood-sad .m-soft, .chevra.mood-sad .c-brows{display:inline}
+.chevra.mood-sad .b-l{transform:rotate(-12deg); transform-origin:82px 70px} .chevra.mood-sad .b-r{transform:rotate(12deg); transform-origin:118px 70px}
+.chevra .c-all{transform-origin:100px 200px; animation:idle 3.2s ease-in-out infinite}
+.chevra .c-head{transform-origin:100px 125px}
+.chevra .eye{transform-box:fill-box; transform-origin:center; animation:blink 5s infinite}
+.chevra .c-tail{transform-origin:156px 140px; animation:wag 1.2s ease-in-out infinite}
+.chevra[data-fixed] .c-all, .chevra[data-fixed] .eye, .chevra[data-fixed] .c-tail{animation:none}
 .chevra.mood-happy .c-all{animation:hop .55s ease 2}
 .chevra.mood-celebrate .c-all{animation:jump .8s ease-in-out infinite}
 .chevra.mood-celebrate .c-sparkles path{transform-box:fill-box; transform-origin:center; animation:twinkle 1s ease-in-out infinite}
-.chevra.mood-celebrate .c-sparkles path:nth-child(2){animation-delay:.3s} .chevra.mood-celebrate .c-sparkles path:nth-child(3){animation-delay:.6s} .chevra.mood-celebrate .c-sparkles path:nth-child(4){animation-delay:.45s}
-.chevra.mood-think .c-all{animation:tilt 2.6s ease-in-out infinite}
+.chevra.mood-celebrate .c-sparkles path:nth-child(2){animation-delay:.3s} .chevra.mood-celebrate .c-sparkles path:nth-child(3){animation-delay:.6s}
+.chevra.mood-think .c-head{animation:tilt 2.6s ease-in-out infinite}
 .chevra.mood-think .c-think{animation:floaty 2s ease-in-out infinite}
-.chevra.mood-sad .c-all{transform:rotate(-4deg) translateY(3px); transition:transform .4s}
-.chevra.mood-encourage .c-all{animation:nod .7s ease 2}
+.chevra.mood-sad .c-head{transform:rotate(-5deg) translateY(3px); transition:transform .4s}
+.chevra.mood-encourage .c-head{animation:nod .7s ease 2}
 
 @keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
@@ -1686,60 +1695,61 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) musicSto
 ['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev, function first(){ if(S.settings.music) musicSync(); }, {once:true, capture:true}));
 
 
-/* ---------- 5. Mascotte Chèvra (dessin de Damien en image, accessoires en calques SVG) ----------
-   Une seule pose. Humeurs : rebonds, inclinaison, paillettes, larme, bulle « ? ».
-   Accessoires : injectés dans les calques <g data-l="…"> par dressChevra(). */
-/* Ancres mesurées sur le dessin de Damien (viewBox 200×294, image 1024×1502).
-   transform = translate(tx ty) rotate(rot) scale(s) translate(-ox -oy)
-   (ox,oy) = point d'origine dans le dessin SVG des accessoires ; (tx,ty) = repère sur la photo. */
-const LAYER_XFORM = {
-  fond:  {tx:0, ty:0, rot:0, s:1, ox:0, oy:0},
-  dos:   {tx:88, ty:178, rot:0, s:0.85, ox:100, oy:170},
-  queue: {tx:42, ty:194, rot:-20, s:0.75, ox:34, oy:176},
-  pattes:{tx:85, ty:270, rot:0, s:0.95, ox:88, oy:220},
-  corps: {tx:94, ty:200, rot:0, s:0.8, ox:100, oy:170},
-  armL:  {tx:76, ty:158, rot:20, s:0.8, ox:68, oy:202},
-  cou:   {tx:108, ty:134, rot:-6, s:0.85, ox:100, oy:148},
-  horns: {tx:75, ty:26, rot:-12, s:0.65, ox:100, oy:48},
-  earL:  {tx:28, ty:94, rot:15, s:0.9, ox:30, oy:98},
-  earR:  {tx:152, ty:52, rot:-25, s:0.85, ox:170, oy:98},
-  joue:  {tx:93, ty:92, rot:-12, s:0.82, ox:100, oy:119},
-  museau:{tx:102, ty:98, rot:-10, s:0.75, ox:100, oy:115},
-  yeux:  {tx:91, ty:75, rot:-13, s:0.85, ox:100, oy:98},
-  front: {tx:88, ty:52, rot:-12, s:0.75, ox:100, oy:70},
-  haut:  {tx:82, ty:32, rot:-12, s:0.78, ox:100, oy:46},
-  armR:  {tx:180, ty:92, rot:25, s:0.85, ox:176, oy:38}
-};
-function layerTransform(L){
-  const t=LAYER_XFORM[L]||{tx:0,ty:0,rot:0,s:1,ox:0,oy:0};
-  return `translate(${t.tx} ${t.ty}) rotate(${t.rot||0}) scale(${t.s}) translate(${-t.ox} ${-t.oy})`;
-}
-const SPRITE_VER='5';
-function chevraSVG(){ return `<svg class="chevra" viewBox="0 0 200 294" role="img" aria-label="Chèvra, la petite chèvre blanche">
+/* ---------- 5. Mascotte Chèvra (SVG animé d'origine, accessoires en calques) ----------
+   Dessin et animations de la première version (commit 50adc8e). Les accessoires
+   (classes has-* / no-*) sont injectés dans les calques <g data-l="…"> par dressChevra(). */
+function chevraSVG(){ return `
+<svg class="chevra" viewBox="0 -6 200 214" role="img" aria-label="Chèvra, la petite chèvre blanche">
  <g class="c-bg" data-l="fond"></g>
+ <ellipse cx="100" cy="200" rx="56" ry="7" fill="#3b2f4a" opacity=".1"/>
  <g class="c-all">
-  <g data-l="dos" transform="${layerTransform('dos')}"></g>
-  <image class="c-photo" href="icons/chevra-mascot-1024.webp?v=5" x="0" y="0" width="200" height="294" preserveAspectRatio="xMidYMid meet"/>
-  <g data-l="queue" transform="${layerTransform('queue')}"></g>
-  <g data-l="pattes" transform="${layerTransform('pattes')}"></g>
-  <g data-l="corps" transform="${layerTransform('corps')}"></g>
-  <g data-l="armL" transform="${layerTransform('armL')}"></g>
-  <g data-l="cou" transform="${layerTransform('cou')}"></g>
-  <g class="c-head">
-   <g data-l="horns" transform="${layerTransform('horns')}"></g>
-   <g data-l="earL" transform="${layerTransform('earL')}"></g>
-   <g data-l="earR" transform="${layerTransform('earR')}"></g>
-   <g data-l="joue" transform="${layerTransform('joue')}"></g>
-   <g data-l="museau" transform="${layerTransform('museau')}"></g>
-   <g data-l="yeux" transform="${layerTransform('yeux')}"></g>
-   <g data-l="front" transform="${layerTransform('front')}"></g>
-   <g data-l="haut" transform="${layerTransform('haut')}"></g>
+  <g data-l="dos"></g>
+  <g class="c-tail"><path d="M152 132 q16 -14 12 -26 q-8 6 -16 18z" fill="#fff" stroke="#d8cfe6" stroke-width="3" stroke-linejoin="round"/><g data-l="queue"></g></g>
+  <g fill="#fff" stroke="#d8cfe6" stroke-width="3">
+   <rect x="62" y="158" width="15" height="36" rx="7"/><rect x="84" y="164" width="15" height="31" rx="7"/>
+   <rect x="102" y="164" width="15" height="31" rx="7"/><rect x="124" y="158" width="15" height="36" rx="7"/>
   </g>
-  <g data-l="armR" transform="${layerTransform('armR')}"></g>
-  <g class="c-tears"><path d="M78 88 q-3.6 7 0 11 q3.6 -3.2 0 -11z" fill="#9fdcff" stroke="#6fb8e0" stroke-width="1.2"/></g>
-  <g class="c-sweat"><path d="M150 48 q-7 10 0 14 q7 -4 0 -14z" fill="#bfe8ff" stroke="#6fb8e0" stroke-width="1.6"/></g>
-  <g class="c-think"><circle cx="158" cy="28" r="3.2" fill="#fff" stroke="#d8cfe6" stroke-width="1.8"/><circle cx="168" cy="16" r="5" fill="#fff" stroke="#d8cfe6" stroke-width="1.8"/><ellipse cx="184" cy="2" rx="15" ry="13" fill="#fff" stroke="#d8cfe6" stroke-width="2.2"/><text x="184" y="8" font-size="16" font-weight="bold" text-anchor="middle" fill="#7a5cd6">?</text></g>
-  <g class="c-sparkles"><path d="M22.0,40.0 L23.9,45.4 L29.6,45.5 L25.0,49.0 L26.7,54.5 L22.0,51.2 L17.3,54.5 L19.0,49.0 L14.4,45.5 L20.1,45.4Z" fill="#ffd34d"/><path d="M178.0,33.0 L179.6,37.7 L184.7,37.8 L180.7,40.9 L182.1,45.7 L178.0,42.8 L173.9,45.7 L175.3,40.9 L171.3,37.8 L176.4,37.7Z" fill="#ff8fb8"/><path d="M168.0,0.0 L169.8,5.6 L175.6,5.5 L170.9,8.9 L172.7,14.5 L168.0,11.0 L163.3,14.5 L165.1,8.9 L160.4,5.5 L166.2,5.6Z" fill="#8fd3ff"/><path d="M28.0,194.0 L29.4,198.1 L33.7,198.1 L30.3,200.7 L31.5,204.9 L28.0,202.4 L24.5,204.9 L25.7,200.7 L22.3,198.1 L26.6,198.1Z" fill="#ffd34d"/></g>
+  <g fill="#9b8bab"><rect x="62" y="186" width="15" height="8" rx="4"/><rect x="84" y="187" width="15" height="8" rx="4"/><rect x="102" y="187" width="15" height="8" rx="4"/><rect x="124" y="186" width="15" height="8" rx="4"/></g>
+  <g data-l="pattes"></g>
+  <ellipse cx="100" cy="148" rx="57" ry="35" fill="#fff" stroke="#d8cfe6" stroke-width="3"/>
+  <path d="M60 140 q10 -8 20 0 M120 138 q10 -8 20 0" stroke="#efe9f6" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <g data-l="corps"></g>
+  <g data-l="armL"></g>
+  <g data-l="cou"></g>
+  <g class="c-head">
+   <g class="c-horns">
+    <path d="M81 54 C75 36 63 31 57 35 C65 39 69 47 71 57 Z" fill="#f3e2bd" stroke="#c9ad7c" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M119 54 C125 36 137 31 143 35 C135 39 131 47 129 57 Z" fill="#f3e2bd" stroke="#c9ad7c" stroke-width="2.5" stroke-linejoin="round"/>
+   </g>
+   <g class="c-earL" transform="rotate(-22 50 86)"><ellipse cx="44" cy="86" rx="22" ry="11" fill="#fff" stroke="#d8cfe6" stroke-width="3"/><ellipse cx="42" cy="86" rx="13" ry="5.5" fill="#ffc6da"/></g>
+   <g data-l="earL"></g>
+   <g class="c-earR" transform="rotate(22 150 86)"><ellipse cx="156" cy="86" rx="22" ry="11" fill="#fff" stroke="#d8cfe6" stroke-width="3"/><ellipse cx="158" cy="86" rx="13" ry="5.5" fill="#ffc6da"/></g>
+   <g data-l="earR"></g>
+   <ellipse cx="100" cy="88" rx="44" ry="40" fill="#fff" stroke="#d8cfe6" stroke-width="3"/>
+   <g class="c-tuft"><path d="M85 53 q5 -11 15 -5 q9 -8 15 5 q-4 7 -15 6 q-11 1 -15 -6z" fill="#fff" stroke="#d8cfe6" stroke-width="2.5" stroke-linejoin="round"/></g>
+   <g data-l="horns"></g>
+   <g class="c-brows" stroke="#5a4a6a" stroke-width="3" stroke-linecap="round" fill="none"><path class="b-l" d="M74 69 q8 -4 15 0"/><path class="b-r" d="M111 69 q7 -4 15 0"/></g>
+   <g class="eyes-open"><g class="eye"><ellipse cx="82" cy="85" rx="7" ry="9" fill="#33284a"/><circle cx="84.5" cy="81.5" r="2.6" fill="#fff"/></g><g class="eye"><ellipse cx="118" cy="85" rx="7" ry="9" fill="#33284a"/><circle cx="120.5" cy="81.5" r="2.6" fill="#fff"/></g></g>
+   <g class="eyes-happy" stroke="#33284a" stroke-width="3.5" fill="none" stroke-linecap="round"><path d="M75 88 q7 -10 14 0"/><path d="M111 88 q7 -10 14 0"/></g>
+   <g class="eyes-wink"><ellipse cx="82" cy="85" rx="7" ry="9" fill="#33284a"/><circle cx="84.5" cy="81.5" r="2.6" fill="#fff"/><path d="M111 87 q7 -8 14 0" stroke="#33284a" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>
+   <g class="eyes-look"><ellipse cx="84" cy="82" rx="6.5" ry="8.5" fill="#33284a"/><circle cx="86" cy="78.5" r="2.4" fill="#fff"/><ellipse cx="120" cy="82" rx="6.5" ry="8.5" fill="#33284a"/><circle cx="122" cy="78.5" r="2.4" fill="#fff"/></g>
+   <ellipse cx="67" cy="102" rx="8" ry="5" fill="#ffb3cc" opacity=".75"/><ellipse cx="133" cy="102" rx="8" ry="5" fill="#ffb3cc" opacity=".75"/>
+   <ellipse cx="100" cy="108" rx="21" ry="14" fill="#fff3f7" stroke="#eadcef" stroke-width="2"/>
+   <ellipse cx="94" cy="104" rx="2.3" ry="1.7" fill="#c9a3b6"/><ellipse cx="106" cy="104" rx="2.3" ry="1.7" fill="#c9a3b6"/>
+   <path class="m-smile" d="M92 112 q8 8 16 0" stroke="#33284a" stroke-width="3" fill="none" stroke-linecap="round"/>
+   <path class="m-big" d="M90 111 q10 15 20 0 z" fill="#ff7aa5" stroke="#33284a" stroke-width="2.5" stroke-linejoin="round"/>
+   <ellipse class="m-o" cx="100" cy="114" rx="3.6" ry="4.2" fill="#33284a"/>
+   <path class="m-soft" d="M93 116 q7 -5 14 0" stroke="#33284a" stroke-width="3" fill="none" stroke-linecap="round"/>
+   <path d="M95 121 q5 13 10 0 q-5 3 -10 0z" fill="#fff" stroke="#d8cfe6" stroke-width="2.5" stroke-linejoin="round"/>
+   <g data-l="joue"></g>
+   <g data-l="museau"></g>
+   <g data-l="yeux"></g>
+   <g data-l="front"></g>
+   <g data-l="haut"></g>
+  </g>
+  <g data-l="armR"></g>
+  <g class="c-think"><circle cx="146" cy="50" r="3.5" fill="#fff" stroke="#d8cfe6" stroke-width="2"/><circle cx="156" cy="38" r="5.5" fill="#fff" stroke="#d8cfe6" stroke-width="2"/><ellipse cx="174" cy="20" rx="17" ry="14" fill="#fff" stroke="#d8cfe6" stroke-width="2.5"/><text x="174" y="27" font-size="19" font-weight="bold" text-anchor="middle" fill="#7a5cd6">?</text></g>
+  <g class="c-sparkles" fill="#ffd34d"><path d="M30 40 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4z"/><path d="M170 60 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3z"/><path d="M160 10 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3z" fill="#ff8fb8"/></g>
  </g>
 </svg>`; }
 // Met à jour toutes les Chèvra animées (panneau PC + écrans) ; les aperçus [data-fixed] ne changent pas d'humeur.
@@ -1788,7 +1798,8 @@ function phrase(k){ return pick(PHRASES[k]).replace('{n}', S.name||'toi'); }
    Chaque accessoire occupe une ou plusieurs PLACES (slots). On peut tout combiner tant que deux accessoires
    ne partagent aucune place ; sinon le nouveau remplace l'ancien.
    prix : en pièces ; ou recompense : débloqué par un exploit (badge, record…), pas achetable.
-   parts : [calque, dessin SVG] — calques : fond, dos, queue, pattes, corps, armL, armR, cou, horns, earL, earR, joue, museau, yeux, front, haut. */
+   parts : [calque, dessin SVG] dans le repère de la chèvre d'origine (viewBox 0 -6 200 214).
+   native:true = déjà calé sur cette chèvre ; les autres dessins (prévus pour la version kawaii) sont recentrés par LAYER_FIT. */
 const SLOTS = { haut:'Haut de tête', front:'Front', oreilleG:'Oreille gauche', oreilleD:'Oreille droite', corneG:'Corne gauche', corneD:'Corne droite',
   yeux:'Yeux', joue:'Joues', museau:'Museau', cou:'Cou', corps:'Corps', dos:'Dos', patteAvant:'Pattes avant', pattes:'Sabots', queue:'Queue', objet:'Objet tenu', fond:'Décor' };
 const CATS = [ ['tete','🎩','Tête'], ['oreilles','🎀','Oreilles & cornes','Oreilles'], ['visage','👓','Visage'], ['cou','🧣','Cou'], ['corps','👕','Corps & dos','Corps'], ['pattes','👟','Pattes & queue','Pattes'], ['objets','🎈','Objets'], ['decors','🌈','Décors'] ];
@@ -1801,10 +1812,10 @@ const _S = 'stroke="'+_O+'" stroke-width="2.5" stroke-linejoin="round"';
 
 const ACCESSOIRES = [
   /* ----- Tête ----- */
-  {id:'hat', nom:'Chapeau de paille', cat:'tete', prix:60, slots:['haut','corneG','corneD'], hide:['horns'], sprite:{layer:'haut', src:'icons/acc/hat.webp', cx:86, cy:36, w:114, h:71, rot:-10}, parts:[['haut',`<path d="M68 46 Q70 8 100 8 Q130 8 132 46 Z" fill="#f6c35b" ${_S}/><path d="M69 34 H131" stroke="#ff6f9f" stroke-width="8"/><ellipse cx="100" cy="46" rx="64" ry="11" fill="#f6c35b" ${_S}/><path d="M48 46 q52 8 104 0" stroke="#e0a63c" stroke-width="2" fill="none"/>`]]},
-  {id:'crown', nom:'Couronne royale', cat:'tete', prix:150, slots:['haut'], parts:[['haut',`<path d="M74 46 L77 12 L90 28 L100 6 L110 28 L123 12 L126 46 Z" fill="#ffd34d" ${_S}/><path d="M75 40 H125" stroke="#e8a800" stroke-width="3"/><circle cx="100" cy="32" r="4.5" fill="#ff5c93" stroke="${_O}" stroke-width="1.5"/><circle cx="85" cy="36" r="3.2" fill="#5bc0ff"/><circle cx="115" cy="36" r="3.2" fill="#3cc59a"/><circle cx="100" cy="6" r="3" fill="#fff" stroke="${_O}" stroke-width="1.5"/>`]]},
-  {id:'wizard', nom:'Chapeau de magicienne', cat:'tete', prix:90, slots:['haut','corneG','corneD'], hide:['horns'], parts:[['haut',`<path d="M62 48 L108 -12 L138 48 Z" fill="#7a5cd6" ${_S}/><ellipse cx="100" cy="48" rx="46" ry="9" fill="#7a5cd6" ${_S}/><path d="${_star(100,22,6)}" fill="#ffd36e"/><path d="${_star(116,36,4)}" fill="#ffd36e"/><path d="${_star(86,40,3.5)}" fill="#ffd36e"/><circle cx="108" cy="-12" r="4.5" fill="#ffd36e" stroke="${_O}" stroke-width="1.5"/>`]]},
-  {id:'headphones', nom:'Casque de musique', cat:'tete', prix:70, slots:['haut','oreilleG','oreilleD'], parts:[['haut',`<path d="M42 100 Q36 26 100 24 Q164 26 158 100" fill="none" stroke="${_O}" stroke-width="12" stroke-linecap="round"/><path d="M42 100 Q36 26 100 24 Q164 26 158 100" fill="none" stroke="#7aa7ff" stroke-width="7" stroke-linecap="round"/><rect x="30" y="84" width="22" height="32" rx="11" fill="#7aa7ff" ${_S}/><rect x="148" y="84" width="22" height="32" rx="11" fill="#7aa7ff" ${_S}/><circle cx="41" cy="100" r="5" fill="#ffd1e3"/><circle cx="159" cy="100" r="5" fill="#ffd1e3"/>`]]},
+  {id:'hat', nom:'Chapeau de paille', cat:'tete', prix:60, slots:['haut','corneG','corneD'], hide:['horns'], native:true, parts:[['haut',`<path d="M76 52 q2 -27 24 -27 q22 0 24 27 z" fill="#f6c35b" stroke="#c8902b" stroke-width="2.5"/><path d="M77 45 h46" stroke="#ff6f9f" stroke-width="6"/><ellipse cx="100" cy="53" rx="50" ry="9" fill="#f6c35b" stroke="#c8902b" stroke-width="2.5"/>`]]},
+  {id:'crown', nom:'Couronne royale', cat:'tete', prix:150, slots:['haut'], native:true, parts:[['haut',`<path d="M76 55 L79 27 L91 41 L100 20 L109 41 L121 27 L124 55 Z" fill="#ffd34d" stroke="#d19a00" stroke-width="2.5" stroke-linejoin="round"/><circle cx="100" cy="44" r="4.5" fill="#ff5c93"/><circle cx="86" cy="48" r="3.2" fill="#5bc0ff"/><circle cx="114" cy="48" r="3.2" fill="#3cc59a"/>`]]},
+  {id:'wizard', nom:'Chapeau de magicienne', cat:'tete', prix:90, slots:['haut'], hide:['horns'], native:true, parts:[['haut',`<path d="M72 56 L106 -2 L128 56 Z" fill="#7a5cd6" stroke="#4f3a99" stroke-width="2.5" stroke-linejoin="round"/><ellipse cx="100" cy="56" rx="36" ry="7" fill="#7a5cd6" stroke="#4f3a99" stroke-width="2.5"/><circle cx="98" cy="30" r="3" fill="#ffd36e"/><circle cx="110" cy="42" r="2.5" fill="#ffd36e"/><circle cx="88" cy="46" r="2.5" fill="#ffd36e"/><circle cx="106" cy="-2" r="4" fill="#ffd36e"/>`]]},
+  {id:'headphones', nom:'Casque de musique', cat:'tete', prix:70, slots:['haut','oreilleG','oreilleD'], native:true, parts:[['haut',`<path d="M58 86 q0 -50 42 -50 q42 0 42 50" fill="none" stroke="#5b8def" stroke-width="7" stroke-linecap="round"/><rect x="50" y="78" width="16" height="26" rx="8" fill="#5b8def"/><rect x="134" y="78" width="16" height="26" rx="8" fill="#5b8def"/>`]]},
   {id:'cap', nom:'Casquette sportive', cat:'tete', prix:45, slots:['haut'], hide:['tuft'], parts:[['haut',`<path d="M118 50 Q158 42 170 56 Q146 64 116 58 Z" fill="#ff8a8a" ${_S}/><path d="M66 54 Q66 16 100 16 Q134 16 134 54 Z" fill="#ff6b6b" ${_S}/><path d="M100 17 V53 M83 22 Q78 36 80 53 M117 22 Q122 36 120 53" stroke="#d94f4f" stroke-width="2" fill="none"/><circle cx="100" cy="16" r="4" fill="#d94f4f" stroke="${_O}" stroke-width="1.5"/>`]]},
   {id:'beret', nom:'Béret d\'artiste', cat:'tete', prix:35, slots:['haut'], parts:[['haut',`<ellipse cx="96" cy="40" rx="42" ry="14" transform="rotate(-10 96 40)" fill="#e0306f" ${_S}/><path d="M60 50 q36 10 74 -6" stroke="#b81f55" stroke-width="3" fill="none"/><path d="M98 26 q2 -8 7 -9" stroke="${_O}" stroke-width="3" fill="none" stroke-linecap="round"/>`]]},
   {id:'partyhat', nom:'Chapeau de fête', cat:'tete', recompense:{rand:1, txt:'Établir un premier record au défi aléatoire'}, slots:['haut'], parts:[['haut',`<path d="M82 44 L100 -2 L118 44 Z" fill="#8fd3ff" ${_S}/><path d="M88 30 L112 30 M93 17 L107 17" stroke="#ff8fb8" stroke-width="5"/><circle cx="100" cy="-4" r="6" fill="#ffd34d" stroke="${_O}" stroke-width="2"/><path d="M80 44 q20 6 40 0" stroke="${_O}" stroke-width="2" fill="none"/>`]]},
@@ -1813,10 +1824,10 @@ const ACCESSOIRES = [
   {id:'unicorn', nom:'Corne de licorne', cat:'tete', recompense:{badge:'serie7', txt:'Jouer 7 jours de suite'}, slots:['front'], parts:[['front',`<path d="M91 50 L100 0 L109 50 Z" fill="#fff4b8" ${_S}/><path d="M93 40 L106 34 M95 28 L105 23 M97 16 L103 12" stroke="#ffb3d1" stroke-width="3" stroke-linecap="round"/>`]]},
   {id:'headband', nom:'Bandeau de sport', cat:'tete', prix:25, slots:['front'], parts:[['front',`<path d="M42 74 Q100 46 158 74 L156 86 Q100 58 44 86 Z" fill="#7fd6b0" ${_S}/><path d="M60 72 Q100 54 140 72" stroke="#fff" stroke-width="3" fill="none" opacity=".8"/>`]]},
   /* ----- Oreilles & cornes ----- */
-  {id:'flower', nom:'Fleur rose', cat:'oreilles', prix:15, slots:['oreilleG'], sprite:{layer:'earL', src:'icons/acc/flower.webp', cx:28, cy:90, w:28, h:26, rot:-25}, parts:[['earL',_flower(27,89,5.5,'#ff8fb8')]]},
+  {id:'flower', nom:'Fleur rose', cat:'oreilles', prix:15, slots:['oreilleG'], native:true, parts:[['earL',`<g transform="translate(62 60)"><circle cx="0" cy="-7" r="6" fill="#ff8fb8"/><circle cx="6.7" cy="-2.2" r="6" fill="#ff8fb8"/><circle cx="4.1" cy="5.7" r="6" fill="#ff8fb8"/><circle cx="-4.1" cy="5.7" r="6" fill="#ff8fb8"/><circle cx="-6.7" cy="-2.2" r="6" fill="#ff8fb8"/><circle r="4.5" fill="#ffd36e"/></g>`]]},
   {id:'bowL', nom:'Petit nœud bleu', cat:'oreilles', prix:15, slots:['oreilleG'], parts:[['earL',_bow(27,89,.75,'#8fd3ff','#4f9ccc',-30)]]},
   {id:'earringL', nom:'Boucle d\'oreille étoile', cat:'oreilles', prix:20, slots:['oreilleG'], parts:[['earL',`<path d="M14 105 v8" stroke="#e8a800" stroke-width="2.5"/><circle cx="14" cy="104" r="2.5" fill="#ffd34d" stroke="${_O}" stroke-width="1.2"/><path d="${_star(14,120,7)}" fill="#ffd34d" stroke="${_O}" stroke-width="1.5" stroke-linejoin="round"/>`]]},
-  {id:'bow', nom:'Joli nœud rose', cat:'oreilles', prix:25, slots:['oreilleD'], parts:[['earR',_bow(173,89,.8,'#ff5c93','#d63a75',30)]]},
+  {id:'bow', nom:'Joli nœud', cat:'oreilles', prix:25, slots:['oreilleD'], native:true, parts:[['earR',`<g transform="translate(140 60) rotate(15)"><path d="M0 0 l-15 -10 v20z M0 0 l15 -10 v20z" fill="#ff5c93" stroke="#d63a75" stroke-width="2" stroke-linejoin="round"/><circle r="4.5" fill="#d63a75"/></g>`]]},
   {id:'daisy', nom:'Marguerite', cat:'oreilles', prix:15, slots:['oreilleD'], parts:[['earR',_flower(173,89,5.5,'#fff')]]},
   {id:'earringR', nom:'Boucle d\'oreille cœur', cat:'oreilles', prix:20, slots:['oreilleD'], parts:[['earR',`<path d="M186 105 v8" stroke="#e8a800" stroke-width="2.5"/><circle cx="186" cy="104" r="2.5" fill="#ffd34d" stroke="${_O}" stroke-width="1.2"/><path d="${_heart(186,120,15)}" fill="#ff5c93" stroke="${_O}" stroke-width="1.5"/>`]]},
   {id:'pinR', nom:'Pin\'s fraise', cat:'oreilles', prix:18, slots:['oreilleD'], parts:[['earR',`<path d="M174 88 q-8 1 -8 9 q0 8 8 11 q8 -3 8 -11 q0 -8 -8 -9z" fill="#ff6b6b" stroke="${_O}" stroke-width="1.5"/><path d="M168 88 q6 -6 12 0 q-6 3 -12 0z" fill="#5fbf7f"/><circle cx="171" cy="96" r="1" fill="#fff"/><circle cx="177" cy="99" r="1" fill="#fff"/><circle cx="173" cy="102" r="1" fill="#fff"/>`]]},
@@ -1824,41 +1835,39 @@ const ACCESSOIRES = [
   {id:'hornflower', nom:'Fleurette de corne', cat:'oreilles', prix:20, slots:['corneG'], parts:[['horns',_flower(20,44,4,'#c3a6ff')]]},
   {id:'pompom', nom:'Pompon de corne', cat:'oreilles', prix:20, slots:['corneD'], parts:[['horns',`<circle cx="180" cy="46" r="8" fill="#ffd36e" stroke="${_O}" stroke-width="2"/><path d="M168 40 l12 8 M168 52 l12 -8 M174 36 v16" stroke="#f4b23c" stroke-width="1.6"/>`]]},
   /* ----- Visage ----- */
-  {id:'glasses', nom:'Lunettes de savante', cat:'visage', prix:30, slots:['yeux'], sprite:{layer:'yeux', src:'icons/acc/glasses.webp', cx:91, cy:82, w:82, h:44, rot:0}, parts:[['yeux',`<circle cx="76" cy="98" r="19" fill="rgba(255,255,255,.15)" stroke="#6a4bc4" stroke-width="4"/><circle cx="124" cy="98" r="19" fill="rgba(255,255,255,.15)" stroke="#6a4bc4" stroke-width="4"/><path d="M95 96 q5 -5 10 0 M57 94 L42 88 M143 94 L158 88" stroke="#6a4bc4" stroke-width="4" fill="none" stroke-linecap="round"/>`]]},
-  {id:'sunglasses', nom:'Lunettes de soleil', cat:'visage', prix:50, slots:['yeux'], parts:[['yeux',`<path d="M54 86 h42 q0 27 -21 27 q-21 0 -21 -27z" fill="#2d2440" ${_S}/><path d="M104 86 h42 q0 27 -21 27 q-21 0 -21 -27z" fill="#2d2440" ${_S}/><path d="M96 89 h8 M54 88 L42 84 M146 88 L158 84" stroke="#2d2440" stroke-width="4" stroke-linecap="round"/><path d="M61 92 l8 0 M111 92 l8 0" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>`]]},
+  {id:'glasses', nom:'Lunettes de savante', cat:'visage', prix:30, slots:['yeux'], native:true, parts:[['yeux',`<circle cx="82" cy="85" r="12.5" fill="rgba(255,255,255,.18)" stroke="#6a4bc4" stroke-width="3"/><circle cx="118" cy="85" r="12.5" fill="rgba(255,255,255,.18)" stroke="#6a4bc4" stroke-width="3"/><path d="M94.5 84 q5.5 -4 11 0" stroke="#6a4bc4" stroke-width="3" fill="none"/>`]]},
+  {id:'sunglasses', nom:'Lunettes de soleil', cat:'visage', prix:50, slots:['yeux'], native:true, parts:[['yeux',`<path d="M68 77 h28 q0 19 -14 19 q-14 0 -14 -19z" fill="#2d2440"/><path d="M104 77 h28 q0 19 -14 19 q-14 0 -14 -19z" fill="#2d2440"/><path d="M96 79 h8" stroke="#2d2440" stroke-width="3"/><path d="M73 81 h7 M109 81 h7" stroke="#fff" opacity=".6" stroke-width="2.5" stroke-linecap="round"/>`]]},
   {id:'monocle', nom:'Monocle chic', cat:'visage', prix:40, slots:['yeux'], parts:[['yeux',`<circle cx="124" cy="98" r="19" fill="rgba(255,255,255,.15)" stroke="#e8a800" stroke-width="4"/><path d="M140 110 q14 20 4 40" stroke="#e8a800" stroke-width="2" fill="none" stroke-dasharray="3 3"/>`]]},
   {id:'heartglasses', nom:'Lunettes cœur', cat:'visage', prix:45, slots:['yeux'], parts:[['yeux',`<path d="${_heart(76,100,46)}" fill="rgba(255,92,147,.55)" stroke="#e0306f" stroke-width="3.5"/><path d="${_heart(124,100,46)}" fill="rgba(255,92,147,.55)" stroke="#e0306f" stroke-width="3.5"/><path d="M96 90 h8" stroke="#e0306f" stroke-width="3.5"/>`]]},
   {id:'starglasses', nom:'Lunettes étoiles', cat:'visage', recompense:{badge:'etoiles75', txt:'Gagner 75 étoiles'}, slots:['yeux'], parts:[['yeux',`<path d="${_star(76,98,24,12)}" fill="rgba(255,211,77,.45)" stroke="#e8a800" stroke-width="3.5" stroke-linejoin="round"/><path d="${_star(124,98,24,12)}" fill="rgba(255,211,77,.45)" stroke="#e8a800" stroke-width="3.5" stroke-linejoin="round"/><path d="M95 92 h10" stroke="#e8a800" stroke-width="3.5"/>`]]},
   {id:'sparkles', nom:'Paillettes de joues', cat:'visage', prix:15, slots:['joue'], parts:[['joue',`<path d="${_star(48,128,5)}" fill="#ffd34d"/><path d="${_star(58,133,3)}" fill="#ff8fb8"/><path d="${_star(152,128,5)}" fill="#ffd34d"/><path d="${_star(142,133,3)}" fill="#8fd3ff"/>`]]},
   {id:'mustache', nom:'Moustache rigolote', cat:'visage', prix:25, slots:['museau'], parts:[['museau',`<path d="M100 119 C92 113 82 113 78 120 C84 118 90 122 100 121 C110 122 116 118 122 120 C118 113 108 113 100 119Z" fill="#8a5a44" stroke="${_O}" stroke-width="1.5"/>`]]},
   /* ----- Cou ----- */
-  {id:'scarf', nom:'Écharpe douillette', cat:'cou', prix:40, slots:['cou'], sprite:{layer:'cou', src:'icons/acc/scarf.webp', cx:96, cy:163, w:110, h:123, rot:-6}, parts:[['cou',`<path d="M56 140 Q100 162 144 140 L148 154 Q100 180 52 154 Z" fill="#ff6f9f" ${_S}/><path d="M118 160 l12 30 l-14 4 l-8 -31z" fill="#ff6f9f" ${_S}/><path d="M72 152 l-2 9 M90 157 l0 9 M110 157 l1 9 M128 152 l2 9" stroke="#fff" stroke-width="3" opacity=".75" stroke-linecap="round"/>`]]},
-  {id:'bowtie', nom:'Nœud papillon', cat:'cou', prix:35, slots:['cou'], parts:[['cou',`<g transform="translate(100 150)"><path d="M0 0 L-17 -10 V10Z M0 0 L17 -10 V10Z" fill="#5bc0ff" ${_S}/><circle r="4.5" fill="#2f8fd0" stroke="${_O}" stroke-width="1.5"/></g>`]]},
+  {id:'scarf', nom:'Écharpe douillette', cat:'cou', prix:40, slots:['cou'], native:true, parts:[['cou',`<path d="M64 120 q36 20 72 0 l3 13 q-39 22 -78 0z" fill="#ff6f9f"/><path d="M116 131 l9 30 l-13 3 l-5 -30z" fill="#ff6f9f"/><path d="M79 128 l-2 11 M96 132 l0 11 M113 130 l2 11 M115 147 l11 -2" stroke="#fff" stroke-width="3" opacity=".75" stroke-linecap="round"/>`]]},
+  {id:'bowtie', nom:'Nœud papillon', cat:'cou', prix:35, slots:['cou'], native:true, parts:[['cou',`<g transform="translate(100 137)"><path d="M0 0 l-15 -9 v18z M0 0 l15 -9 v18z" fill="#5bc0ff" stroke="#2f8fd0" stroke-width="2" stroke-linejoin="round"/><circle r="4" fill="#2f8fd0"/></g>`]]},
   {id:'lei', nom:'Collier de fleurs', cat:'cou', prix:40, slots:['cou'], parts:[['cou',`${_flower(66,146,4,'#ff8fb8')}${_flower(80,154,4,'#ffd36e','#ff8fb8')}${_flower(94,158,4,'#c3a6ff')}${_flower(108,158,4,'#8fd3ff')}${_flower(122,154,4,'#ff8fb8')}${_flower(135,146,4,'#ffd36e','#ff8fb8')}`]]},
   {id:'bell', nom:'Clochette de chèvre', cat:'cou', recompense:{badge:'defi5', txt:'Terminer 5 défis du jour'}, slots:['cou'], parts:[['cou',`<path d="M60 142 Q100 160 140 142" stroke="${_O}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M60 142 Q100 160 140 142" stroke="#e0306f" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M90 168 Q90 152 100 152 Q110 152 110 168 Z" fill="#ffd34d" ${_S}/><circle cx="100" cy="170" r="3" fill="#e8a800" stroke="${_O}" stroke-width="1.2"/>`]]},
   {id:'medal', nom:'Médaille d\'or', cat:'cou', recompense:{badge:'cent', txt:'Donner 100 bonnes réponses'}, slots:['cou'], parts:[['cou',`<path d="M82 144 L96 172 L104 172 L118 144 L108 144 L100 160 L92 144 Z" fill="#5bc0ff" ${_S}/><circle cx="100" cy="178" r="11" fill="#ffd34d" ${_S}/><path d="${_star(100,178,6)}" fill="#fff4b8"/>`]]},
-  {id:'collier_cloche', hidden:true, nom:'Collier et clochette', cat:'cou', recompense:{badge:'parfait', txt:'Obtenir 3 étoiles à un niveau'}, slots:['cou'], parts:[['cou',`<path d="M68 142 Q100 158 132 142" stroke="${_O}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M68 142 Q100 158 132 142" stroke="#8a5a32" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M91 170 Q91 154 100 152 Q109 154 109 170 Q100 176 91 170 Z" fill="#ffd34d" ${_S}/><ellipse cx="100" cy="160" rx="5" ry="3" fill="#ffe9a0"/><circle cx="100" cy="171" r="2.6" fill="#e8a800" stroke="${_O}" stroke-width="1.2"/>`]]},
   /* ----- Corps & dos ----- */
   {id:'sweater', nom:'Pull tout doux', cat:'corps', prix:55, slots:['corps'], parts:[['corps',`<path d="M64 158 Q66 140 100 140 Q134 140 136 158 L138 196 Q100 210 62 196 Z" fill="#9ad8ff" ${_S}/><path d="M64 172 Q100 180 136 172 M63 186 Q100 195 137 186" stroke="#d6f0ff" stroke-width="4" fill="none"/><path d="M80 143 Q100 152 120 143" stroke="#6fb8e0" stroke-width="5" fill="none" stroke-linecap="round"/>`]]},
   {id:'tshirt', nom:'T-shirt étoile', cat:'corps', prix:35, slots:['corps'], parts:[['corps',`<path d="M64 158 Q66 140 100 140 Q134 140 136 158 L138 196 Q100 210 62 196 Z" fill="#ffe08a" ${_S}/><path d="${_star(100,176,12)}" fill="#ff8fb8" stroke="${_O}" stroke-width="1.8" stroke-linejoin="round"/>`]]},
-  {id:'tutu', nom:'Tutu de danseuse', cat:'corps', prix:50, slots:['corps'], sprite:{layer:'corps', src:'icons/acc/tutu.webp', cx:92, cy:220, w:120, h:60, rot:0}, parts:[['corps',`<path d="M60 186 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 L134 182 Q100 196 66 182 Z" fill="#ffc0dc" ${_S}/><path d="M66 184 Q100 194 134 184" stroke="#ff8fb8" stroke-width="4" fill="none"/>`]]},
+  {id:'tutu', nom:'Tutu de danseuse', cat:'corps', prix:50, slots:['corps'], parts:[['corps',`<path d="M60 186 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 L134 182 Q100 196 66 182 Z" fill="#ffc0dc" ${_S}/><path d="M66 184 Q100 194 134 184" stroke="#ff8fb8" stroke-width="4" fill="none"/>`]]},
   {id:'cape', nom:'Cape de héroïne', cat:'corps', recompense:{perfect10:1, txt:'Faire un sans-faute au défi aléatoire (10 questions ou plus)'}, slots:['dos'], parts:[['dos',`<path d="M66 146 Q100 136 134 146 L162 212 Q100 224 38 212 Z" fill="#e0306f" ${_S}/><path d="M70 150 L48 208 M130 150 L152 208" stroke="#b81f55" stroke-width="2.5" fill="none"/>`],['cou',`<circle cx="70" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/><circle cx="130" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/>`]]},
   {id:'wings', nom:'Ailes de papillon', cat:'corps', prix:80, slots:['dos'], parts:[['dos',`<path d="M74 160 C40 120 10 140 22 168 C10 190 44 206 74 182 Z" fill="#c3a6ff" ${_S}/><path d="M126 160 C160 120 190 140 178 168 C190 190 156 206 126 182 Z" fill="#c3a6ff" ${_S}/><circle cx="36" cy="160" r="6" fill="#ffd1e3"/><circle cx="164" cy="160" r="6" fill="#ffd1e3"/><circle cx="42" cy="184" r="4" fill="#fff"/><circle cx="158" cy="184" r="4" fill="#fff"/>`]]},
-  {id:'sac_bleu', hidden:true, nom:'Sac à dos bleu', cat:'corps', recompense:{badge:'premier', txt:'Terminer un premier niveau'}, slots:['dos'], parts:[['dos',`<path d="M38 150 Q34 138 48 136 L64 146 L60 198 Q34 194 36 168 Z" fill="#4d8fd6" ${_S}/><path d="M162 150 Q166 138 152 136 L136 146 L140 198 Q166 194 164 168 Z" fill="#4d8fd6" ${_S}/><path d="M56 182 Q100 212 144 182 L148 204 Q100 226 52 204 Z" fill="#4d8fd6" ${_S}/><path d="M44 164 h14 M156 164 h-14" stroke="#ffd34d" stroke-width="3.2" stroke-linecap="round"/><path d="M50 178 q-4 10 0 22 M150 178 q4 10 0 22" stroke="#3a6fad" stroke-width="2" fill="none"/>`],['cou',`<path d="M80 138 Q64 152 48 168" fill="none" stroke="${_O}" stroke-width="5.2" stroke-linecap="round"/><path d="M80 138 Q64 152 48 168" fill="none" stroke="#7eb3ee" stroke-width="2.8" stroke-linecap="round"/><path d="M120 138 Q136 152 152 168" fill="none" stroke="${_O}" stroke-width="5.2" stroke-linecap="round"/><path d="M120 138 Q136 152 152 168" fill="none" stroke="#7eb3ee" stroke-width="2.8" stroke-linecap="round"/>`]]},
-  {id:'mittens', nom:'Moufles douillettes', cat:'corps', prix:30, slots:['patteAvant'], parts:[['armL',`<ellipse cx="68" cy="202" rx="11" ry="9" fill="#ff8fb8" ${_S}/><path d="M58 197 h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`],['armR',`<g transform="rotate(18 176 38)"><ellipse cx="176" cy="38" rx="11" ry="9" fill="#ff8fb8" ${_S}/><path d="M166 33 h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>`]]},
+  {id:'mittens', nom:'Moufles douillettes', cat:'corps', prix:30, slots:['patteAvant'], native:true, parts:[['armL',`<ellipse cx="69" cy="178" rx="10" ry="8" fill="#ff8fb8" stroke="#5a4a6a" stroke-width="2"/><path d="M60 174 h18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>`],['armR',`<ellipse cx="131" cy="178" rx="10" ry="8" fill="#ff8fb8" stroke="#5a4a6a" stroke-width="2"/><path d="M122 174 h18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>`]]},
   {id:'bracelet', nom:'Bracelet de perles', cat:'corps', prix:20, slots:['patteAvant'], parts:[['armL',`<g stroke="${_O}" stroke-width="1.2"><circle cx="62" cy="178" r="3.2" fill="#ff8fb8"/><circle cx="67" cy="181" r="3.2" fill="#ffd36e"/><circle cx="73" cy="184" r="3.2" fill="#8fd3ff"/><circle cx="78" cy="182" r="3.2" fill="#c3a6ff"/></g>`]]},
   /* ----- Pattes & queue ----- */
-  {id:'sneakers', nom:'Baskets', cat:'pattes', prix:45, slots:['pattes'], sprites:[{layer:'pattes', src:'icons/acc/sneakers-l.webp', cx:64, cy:263, w:38, h:30, rot:-12},{layer:'pattes', src:'icons/acc/sneakers-r.webp', cx:117, cy:260, w:42, h:33, rot:6, flip:true}], parts:[['pattes',`<path d="M73 217 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z M105 217 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z" fill="#ff6b6b" ${_S}/><path d="M70 227 h30 M102 227 h30" stroke="#fff" stroke-width="3.5"/><path d="M80 220 l8 0 M112 220 l8 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`]]},
-  {id:'boots', nom:'Bottes de pluie', cat:'pattes', prix:40, slots:['pattes'], parts:[['pattes',`<path d="M74 200 h21 v26 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z M107 200 h21 v26 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z" fill="#ffd34d" ${_S}/><path d="M74 206 h21 M107 206 h21" stroke="#e8a800" stroke-width="2.5"/>`]]},
-  {id:'socks', nom:'Chaussettes rayées', cat:'pattes', prix:20, slots:['pattes'], parts:[['pattes',`<g stroke="#ff8fb8" stroke-width="3.5"><path d="M77 206 h17 M77 211 h17 M109 206 h17 M109 211 h17"/></g><g stroke="#8fd3ff" stroke-width="3.5"><path d="M77 208.5 h17 M77 213.5 h17 M109 208.5 h17 M109 213.5 h17"/></g>`]]},
-  {id:'tailbow', nom:'Nœud de queue', cat:'pattes', prix:15, slots:['queue'], parts:[['queue',_bow(34,176,.6,'#c3a6ff','#7a5cd6',-20)]]},
+  {id:'sneakers', nom:'Baskets', cat:'pattes', prix:45, slots:['pattes'], native:true, parts:[['pattes',`<g fill="#ff6b6b" stroke="#5a4a6a" stroke-width="2" stroke-linejoin="round"><path d="M59 184 h21 q5 0 5 7 v6 q0 4 -5 4 h-21 q-5 0 -5 -4 v-6 q0 -7 5 -7z"/><path d="M81 185 h21 q5 0 5 7 v6 q0 4 -5 4 h-21 q-5 0 -5 -4 v-6 q0 -7 5 -7z"/><path d="M99 185 h21 q5 0 5 7 v6 q0 4 -5 4 h-21 q-5 0 -5 -4 v-6 q0 -7 5 -7z"/><path d="M121 184 h21 q5 0 5 7 v6 q0 4 -5 4 h-21 q-5 0 -5 -4 v-6 q0 -7 5 -7z"/></g><path d="M57 195 h28 M79 196 h28 M97 196 h28 M119 195 h28" stroke="#fff" stroke-width="3"/><path d="M66 188 h8 M88 189 h8 M106 189 h8 M128 188 h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`]]},
+  {id:'boots', nom:'Bottes de pluie', cat:'pattes', prix:40, slots:['pattes'], native:true, parts:[['pattes',`<g fill="#ffd34d" stroke="#5a4a6a" stroke-width="2" stroke-linejoin="round"><path d="M60 172 h19 v26 q0 5 -5 5 h-15 q-5 0 -5 -5 v-3 q0 -4 6 -4z"/><path d="M82 176 h19 v22 q0 5 -5 5 h-15 q-5 0 -5 -5 v-3 q0 -4 6 -4z"/><path d="M100 176 h19 v22 q0 5 -5 5 h-15 q-5 0 -5 -5 v-3 q0 -4 6 -4z"/><path d="M122 172 h19 v26 q0 5 -5 5 h-15 q-5 0 -5 -5 v-3 q0 -4 6 -4z"/></g><path d="M60 180 h19 M82 182 h19 M100 182 h19 M122 180 h19" stroke="#e8a800" stroke-width="2.5"/>`]]},
+  {id:'socks', nom:'Chaussettes rayées', cat:'pattes', prix:20, slots:['pattes'], native:true, parts:[['pattes',`<g stroke="#ff8fb8" stroke-width="3.5" stroke-linecap="round"><path d="M63 176 h13 M85 178 h13 M103 178 h13 M125 176 h13"/><path d="M63 182 h13 M85 184 h13 M103 184 h13 M125 182 h13"/></g><g stroke="#8fd3ff" stroke-width="3.5" stroke-linecap="round"><path d="M63 179 h13 M85 181 h13 M103 181 h13 M125 179 h13"/><path d="M63 185 h13 M85 187 h13 M103 187 h13 M125 185 h13"/></g>`]]},
+  {id:'tailbow', nom:'Nœud de queue', cat:'pattes', prix:15, slots:['queue'], native:true, parts:[['queue',_bow(160,118,.55,'#c3a6ff','#7a5cd6',20)]]},
   /* ----- Objets tenus ----- */
-  {id:'balloon', nom:'Ballon cœur', cat:'objets', prix:30, slots:['objet'], sprite:{layer:'armR', src:'icons/acc/balloon.webp', cx:172, cy:50, w:42, h:72, rot:10}, parts:[['armR',`<path d="M176 38 Q186 8 188 -20" stroke="${_O}" stroke-width="1.6" fill="none"/><path d="${_heart(192,-28,36)}" fill="#ff5c93" stroke="${_O}" stroke-width="2.2"/><path d="M182 -36 q3 -5 8 -5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>`]]},
+  {id:'balloon', nom:'Ballon cœur', cat:'objets', prix:30, slots:['objet'], parts:[['armR',`<path d="M176 38 Q186 8 188 -20" stroke="${_O}" stroke-width="1.6" fill="none"/><path d="${_heart(192,-28,36)}" fill="#ff5c93" stroke="${_O}" stroke-width="2.2"/><path d="M182 -36 q3 -5 8 -5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>`]]},
   {id:'wand', nom:'Baguette magique', cat:'objets', recompense:{badge:'revision', txt:'Terminer une révision intelligente'}, slots:['objet'], parts:[['armR',`<path d="M174 42 L188 8" stroke="${_O}" stroke-width="6" stroke-linecap="round"/><path d="M174 42 L188 8" stroke="#c3a6ff" stroke-width="3" stroke-linecap="round"/><path d="${_star(190,4,11)}" fill="#ffd34d" stroke="${_O}" stroke-width="2" stroke-linejoin="round"/>`]]},
   {id:'lollipop', nom:'Sucette arc-en-ciel', cat:'objets', prix:20, slots:['objet'], parts:[['armR',`<path d="M174 40 L186 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M174 40 L186 12" stroke="${_O}" stroke-width="1" fill="none"/><circle cx="190" cy="0" r="13" fill="#fff" ${_S}/><path d="M190 0 m-9 0 a9 9 0 0 1 18 0 a6 6 0 0 1 -12 0 a3 3 0 0 1 6 0" stroke="#ff5c93" stroke-width="3" fill="none"/><path d="M190 0 m-11 3 a11 11 0 0 0 22 0" stroke="#8fd3ff" stroke-width="3" fill="none"/>`]]},
   {id:'book', nom:'Livre de sciences', cat:'objets', prix:25, slots:['objet'], parts:[['armR',`<g transform="rotate(16 176 52)"><rect x="162" y="38" width="28" height="22" rx="3" fill="#3cc59a" ${_S}/><path d="M176 38 v22" stroke="${_O}" stroke-width="2"/><path d="${_star(183,49,4)}" fill="#fff"/></g>`]]},
   /* ----- Décors ----- */
-  {id:'rainbow', nom:'Arc-en-ciel', cat:'decors', recompense:{badge:'explo', txt:'Visiter les 6 îles'}, slots:['fond'], sprite:{layer:'fond', src:'icons/acc/rainbow.webp', cx:100, cy:84, w:200, h:102, rot:0}, parts:[['fond',`<g fill="none" stroke-width="10" opacity=".9"><path d="M8 200 A92 92 0 0 1 192 200" stroke="#ffb3b3"/><path d="M18 200 A82 82 0 0 1 182 200" stroke="#ffe08a"/><path d="M28 200 A72 72 0 0 1 172 200" stroke="#b5ebc9"/><path d="M38 200 A62 62 0 0 1 162 200" stroke="#b9e3ff"/></g>`]]},
+  {id:'rainbow', nom:'Arc-en-ciel', cat:'decors', recompense:{badge:'explo', txt:'Visiter les 6 îles'}, slots:['fond'], parts:[['fond',`<g fill="none" stroke-width="10" opacity=".9"><path d="M8 200 A92 92 0 0 1 192 200" stroke="#ffb3b3"/><path d="M18 200 A82 82 0 0 1 182 200" stroke="#ffe08a"/><path d="M28 200 A72 72 0 0 1 172 200" stroke="#b5ebc9"/><path d="M38 200 A62 62 0 0 1 162 200" stroke="#b9e3ff"/></g>`]]},
   {id:'starsky', nom:'Ciel étoilé', cat:'decors', recompense:{badge:'etoiles30', txt:'Gagner 30 étoiles'}, slots:['fond'], parts:[['fond',`<circle cx="100" cy="110" r="98" fill="#e6dcff" opacity=".8"/><path d="${_star(30,40,8)}" fill="#ffd34d"/><path d="${_star(172,48,6)}" fill="#ffd34d"/><path d="${_star(20,130,5)}" fill="#fff"/><path d="${_star(184,140,7)}" fill="#ffd34d"/><path d="${_star(150,6,5)}" fill="#fff"/><circle cx="56" cy="16" r="2.5" fill="#fff"/><circle cx="186" cy="96" r="2.5" fill="#fff"/>`]]},
   {id:'clouds', nom:'Petits nuages', cat:'decors', prix:35, slots:['fond'], parts:[['fond',`<g fill="#fff" stroke="#d8e9f5" stroke-width="2"><path d="M14 60 a10 10 0 0 1 16 -8 a12 12 0 0 1 22 4 a8 8 0 0 1 0 16 h-36 a7 7 0 0 1 -2 -12z"/><path d="M150 30 a9 9 0 0 1 14 -7 a11 11 0 0 1 20 4 a7 7 0 0 1 0 14 h-32 a6 6 0 0 1 -2 -11z"/><path d="M160 150 a8 8 0 0 1 12 -6 a10 10 0 0 1 18 3 a6 6 0 0 1 0 12 h-28 a5 5 0 0 1 -2 -9z"/></g>`]]},
 
@@ -1879,19 +1888,26 @@ const ACCESSOIRES = [
 ];
 const ACC = Object.fromEntries(ACCESSOIRES.map(a=>[a.id,a]));
 const LAYER_ORDER_IN = id=>ACCESSOIRES.indexOf(ACC[id]);
-function itemSprites(it){ if(!it) return []; if(it.sprites) return it.sprites; if(it.sprite) return [it.sprite]; return []; }
-function spriteMarkup(sp, layer){
-  const t=LAYER_XFORM[layer]||{tx:0,ty:0,rot:0,s:1,ox:0,oy:0};
-  const inv=`translate(${t.ox} ${t.oy}) scale(${1/t.s}) rotate(${-(t.rot||0)}) translate(${-t.tx} ${-t.ty})`;
-  const flip=sp.flip?' scale(-1 1)':'';
-  const href=sp.src+(sp.src.includes('?')?'':'?v='+SPRITE_VER);
-  return `<g transform="${inv}"><g transform="translate(${sp.cx} ${sp.cy}) rotate(${sp.rot||0})${flip}"><image href="${href}" x="${-sp.w/2}" y="${-sp.h/2}" width="${sp.w}" height="${sp.h}" preserveAspectRatio="xMidYMid meet"/></g></g>`;
-}
+/* Recentrage des accessoires dessinés pour la chèvre kawaii (fcad685) vers la chèvre d'origine (50adc8e). */
+const HEAD_FIT = 'translate(100 85) scale(0.75) translate(-100 -98)';
+const HAT_FIT  = 'translate(100 93) scale(0.75) translate(-100 -98)';
+const BODY_FIT = 'translate(0 -22)';
+const LEG_FIT  = 'translate(0 -28)';
+const TAIL_FIT = 'translate(16 -56)';
+const OBJ_FIT  = 'translate(-16 70)';
+const LAYER_FIT = {
+  fond:'', dos:BODY_FIT, queue:TAIL_FIT, pattes:LEG_FIT, corps:BODY_FIT,
+  armL:BODY_FIT, armR:OBJ_FIT, cou:HEAD_FIT, horns:HAT_FIT,
+  earL:HEAD_FIT, earR:HEAD_FIT, joue:HEAD_FIT, museau:HEAD_FIT, yeux:HEAD_FIT,
+  front:HAT_FIT, haut:HAT_FIT
+};
 function layerMarkup(wear, layer){
   return (wear||[]).filter(id=>ACC[id]).sort((a,b)=>LAYER_ORDER_IN(a)-LAYER_ORDER_IN(b)).map(id=>{
-    const it=ACC[id], sps=itemSprites(it).filter(s=>s.layer===layer);
-    if(sps.length) return sps.map(s=>spriteMarkup(s, layer)).join('');
-    return it.parts.filter(p=>p[0]===layer).map(p=>p[1]).join('');
+    const it=ACC[id], markup=it.parts.filter(p=>p[0]===layer).map(p=>p[1]).join('');
+    if(!markup) return '';
+    if(it.native) return markup;
+    const fit=LAYER_FIT[layer]||'';
+    return fit?`<g class="acc-fit" transform="${fit}">${markup}</g>`:markup;
   }).join('');
 }
 function accOverlap(a,b){ return a!==b && ACC[a] && ACC[b] && ACC[a].slots.some(s=>ACC[b].slots.includes(s)); }
@@ -1899,7 +1915,7 @@ function slotNames(it){ return it.slots.map(s=>SLOTS[s]).join(' + '); }
 
 
 /* ---------- 6. Boutique & badges ---------- */
-const SHOP = ACCESSOIRES.filter(it=>!it.hidden);   // sac bleu et collier sont déjà dessinés sur la mascotte
+const SHOP = ACCESSOIRES.filter(it=>!it.hidden);
 // Migration : anciennes sauvegardes { equipped:{slot:id} } → liste S.wear ; conflits de places résolus (on garde le premier).
 function migrateWardrobe(){
   if(!Array.isArray(S.owned)) S.owned=[];
