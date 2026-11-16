@@ -9,10 +9,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Chèvra">
 <title>Chèvra – Révisions CM2</title>
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=4">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png?v=4">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=4">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=4">
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 /* =========================================================
@@ -118,17 +118,18 @@ body.in-game main{padding-bottom:calc(24px + var(--safe-b))}
 .island .blob{width:118px; height:96px; flex:none; position:relative; filter:drop-shadow(0 6px 0 rgba(40,90,140,.25)); transition:transform .2s}
 .island .blob svg{width:100%; height:100%}
 .island .ie{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2.4rem; padding-bottom:10px}
-.island .il{background:rgba(255,255,255,.92); border-radius:16px; padding:8px 12px; box-shadow:var(--shadow)}
-.island .il b{display:block; font-size:1.02rem}
-.island .il small{font-size:.85rem; color:var(--muted)}
+.island .il{background:rgba(255,255,255,.92); border-radius:16px; padding:8px 12px; box-shadow:var(--shadow); min-width:0; max-width:100%}
+.island .il b{display:block; font-size:1.08rem; font-weight:800; line-height:1.2; overflow-wrap:anywhere}
+.island .il small{display:block; font-size:.8rem; color:var(--muted); line-height:1.25; overflow-wrap:anywhere}
 .island:hover .blob, .island:focus-visible .blob{transform:translateY(-4px) scale(1.04)}
 .progressbar{display:block; width:100%; height:10px; border-radius:6px; background:#ece6f5; overflow:hidden; margin-top:4px}
 .progressbar > i{display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--mint),#3cc59a); transition:width .6s}
-.boat{display:none}
 
 /* ---------- Île (liste des thèmes) ---------- */
-.island-head{display:flex; align-items:center; gap:12px; border-radius:var(--radius); padding:16px; margin-bottom:14px}
+.island-head{display:flex; align-items:center; gap:12px; border-radius:var(--radius); padding:16px; margin-bottom:14px; min-width:0}
 .island-head .big{font-size:2.6rem}
+.island-head .ih-titles{min-width:0; flex:1}
+.island-head h1{margin:0; font-size:1.45rem; font-weight:800; line-height:1.15; overflow-wrap:anywhere}
 .backbtn{min-height:48px; min-width:48px; border-radius:16px; border:2px solid var(--line); background:#fff; font-weight:800; padding:0 14px}
 .themes{display:grid; gap:14px}
 .theme{background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:16px}
@@ -153,7 +154,8 @@ body.in-game main{padding-bottom:calc(24px + var(--safe-b))}
 .dot.cur{background:var(--sun); transform:scale(1.25)}
 .dot.ok{background:#3cc59a} .dot.ko{background:#ff8fa7}
 .game-chevra{display:flex; align-items:flex-end; gap:8px; margin-bottom:10px}
-.game-chevra .chevra-host{width:130px; flex:none}
+.game-chevra .chevra-host{width:88px; flex:none; max-height:130px}
+.game-chevra .chevra{max-height:130px}
 .bubble{position:relative; background:#fff; border-radius:20px; padding:12px 14px; box-shadow:var(--shadow); font-weight:700; font-size:1rem; flex:1; margin-bottom:22px}
 .bubble::after{content:""; position:absolute; left:-10px; bottom:16px; border:10px solid transparent; border-right-color:#fff; border-left:0}
 .qcard{background:#fff; border-radius:26px; box-shadow:var(--shadow-l); padding:18px; animation:pop .35s ease}
@@ -278,51 +280,23 @@ table.ptable{width:100%; border-collapse:collapse; font-size:.95rem}
 .subj-prog{display:flex; flex-direction:column; gap:8px}
 .subj-prog .sp{display:grid; grid-template-columns:28px 1fr auto; gap:8px; align-items:center; font-size:.88rem; font-weight:700}
 
-/* ---------- Mascotte (kawaii chibi) ---------- */
+/* ---------- Mascotte (dessin de Damien, une pose + effets légers) ---------- */
 .chevra-host{position:relative}
 .chevra{width:100%; height:auto; display:block; overflow:visible}
-.chevra .c-hoofup, .chevra .eyes-tears, .chevra .eyes-look, .chevra .eyes-happy, .chevra .eyes-wink, .chevra .eyes-star,
-.chevra .m-omega, .chevra .m-big, .chevra .m-o, .chevra .m-sad, .chevra .c-think, .chevra .c-sparkles, .chevra .c-brows, .chevra .c-sweat{display:none}
-.chevra.no-horns .c-horns, .chevra.no-tuft .c-tuft{display:none}
-/* heureuse : yeux ^ ^ et bouche ω */
-.chevra.mood-happy .eyes-open, .chevra.mood-happy .m-smile{display:none}
-.chevra.mood-happy .eyes-happy, .chevra.mood-happy .m-omega{display:inline}
-/* encourage : clin d'œil + sabot levé */
-.chevra.mood-encourage .eyes-open, .chevra.mood-encourage .m-smile{display:none}
-.chevra.mood-encourage .eyes-wink, .chevra.mood-encourage .m-omega{display:inline}
-.chevra.mood-encourage .c-armL, .chevra.mood-celebrate .c-armL{visibility:hidden}
-.chevra.mood-encourage .c-hoofup, .chevra.mood-celebrate .c-hoofup{display:inline}
-.chevra .c-hoofup{transform-origin:58px 166px; animation:wave .9s ease-in-out 2}
-/* réfléchit : yeux vers le haut, goutte, bulle « ? » */
-.chevra.mood-think .eyes-open, .chevra.mood-think .m-smile{display:none}
-.chevra.mood-think .eyes-look, .chevra.mood-think .m-o, .chevra.mood-think .c-think, .chevra.mood-think .c-sweat{display:inline}
-/* un peu triste : grands yeux mouillés, petite moue, jamais effrayante */
-.chevra.mood-sad .m-smile{display:none}
-.chevra.mood-sad .eyes-tears, .chevra.mood-sad .m-sad, .chevra.mood-sad .c-brows{display:inline}
-.chevra.mood-sad .b-l{transform:rotate(-14deg); transform-origin:75px 74px} .chevra.mood-sad .b-r{transform:rotate(14deg); transform-origin:125px 74px}
-/* fête : yeux étoiles, paillettes, saut */
-.chevra.mood-celebrate .eyes-open, .chevra.mood-celebrate .m-smile{display:none}
-.chevra.mood-celebrate .eyes-star, .chevra.mood-celebrate .m-big, .chevra.mood-celebrate .c-sparkles{display:inline}
-/* animations au repos : respiration, clignement, oreilles, queue */
-.chevra .c-all{transform-origin:100px 214px; animation:idle 3.2s ease-in-out infinite}
-.chevra .c-head{transform-origin:100px 140px}
-.chevra .c-armL{transform-origin:68px 152px} .chevra .c-armR{transform-origin:132px 152px}
-.chevra .eye{transform-box:fill-box; transform-origin:center; animation:blink 4.6s infinite}
-.chevra .c-earL{transform-origin:46px 84px; animation:earL 5s ease-in-out infinite}
-.chevra .c-earR{transform-origin:154px 84px; animation:earR 5s ease-in-out infinite}
-.chevra .c-tail{transform-origin:136px 188px; animation:wag 1.4s ease-in-out infinite}
-.chevra[data-fixed] .c-all, .chevra[data-fixed] .eye, .chevra[data-fixed] .c-earL, .chevra[data-fixed] .c-earR, .chevra[data-fixed] .c-tail{animation:none}
+.chevra .c-think, .chevra .c-sparkles, .chevra .c-tears, .chevra .c-sweat{display:none}
+.chevra.mood-think .c-think, .chevra.mood-think .c-sweat{display:inline}
+.chevra.mood-sad .c-tears{display:inline}
+.chevra.mood-celebrate .c-sparkles{display:inline}
+.chevra .c-all{transform-origin:100px 280px; animation:idle 3.2s ease-in-out infinite}
+.chevra[data-fixed] .c-all{animation:none}
 .chevra.mood-happy .c-all{animation:hop .55s ease 2}
 .chevra.mood-celebrate .c-all{animation:jump .8s ease-in-out infinite}
 .chevra.mood-celebrate .c-sparkles path{transform-box:fill-box; transform-origin:center; animation:twinkle 1s ease-in-out infinite}
 .chevra.mood-celebrate .c-sparkles path:nth-child(2){animation-delay:.3s} .chevra.mood-celebrate .c-sparkles path:nth-child(3){animation-delay:.6s} .chevra.mood-celebrate .c-sparkles path:nth-child(4){animation-delay:.45s}
-.chevra.mood-think .c-head{animation:tilt 2.6s ease-in-out infinite}
+.chevra.mood-think .c-all{animation:tilt 2.6s ease-in-out infinite}
 .chevra.mood-think .c-think{animation:floaty 2s ease-in-out infinite}
-.chevra.mood-sad .c-head{transform:rotate(-4deg) translateY(3px); transition:transform .4s}
-.chevra.mood-encourage .c-head{animation:nod .7s ease 2}
-@keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-12deg)}}
-@keyframes earL{0%,80%,100%{transform:rotate(0)}86%{transform:rotate(-9deg)}92%{transform:rotate(4deg)}}
-@keyframes earR{0%,60%,100%{transform:rotate(0)}66%{transform:rotate(9deg)}72%{transform:rotate(-4deg)}}
+.chevra.mood-sad .c-all{transform:rotate(-4deg) translateY(3px); transition:transform .4s}
+.chevra.mood-encourage .c-all{animation:nod .7s ease 2}
 
 @keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
@@ -405,8 +379,6 @@ html.calm *, html.calm *::before, html.calm *::after{animation:none!important; t
   .island .blob{width:min(100%,170px); height:auto; aspect-ratio:170/134}
   .island .ie{font-size:3rem}
   .island .il{width:100%; max-width:220px}
-  .boat{display:block; position:absolute; font-size:2rem; left:8%; top:47%; animation:sail 16s ease-in-out infinite}
-  @keyframes sail{0%,100%{transform:translateX(0) rotate(-3deg)}50%{transform:translateX(min(60vw,520px)) rotate(3deg)}}
   .themes{grid-template-columns:repeat(2,1fr); gap:20px}
   .grid{grid-template-columns:repeat(4,1fr); gap:18px}
   .qcard{padding:34px 38px; max-width:860px; margin:0 auto}
@@ -433,6 +405,16 @@ html.calm *, html.calm *::before, html.calm *::after{animation:none!important; t
   .navbtn{font-size:.72rem}
 }
 @media (max-width:339.98px){ .pill.stars{display:none} }
+@media (max-width:359.98px){
+  .island{width:100%; gap:8px; min-height:96px}
+  .island .blob{width:96px; height:78px}
+  .island .ie{font-size:2rem}
+  .island .il{padding:6px 8px}
+  .island .il b{font-size:.92rem}
+  .island-head{gap:8px; padding:12px}
+  .island-head h1{font-size:1.15rem}
+  .island-head .big{font-size:2rem}
+}
 
 /* ---------- Écran d'accueil (prénom) ---------- */
 body.welcome .mainnav, body.welcome .sidebar, body.welcome .panel, body.welcome .pills, body.welcome .topbar .brand span{display:none !important}
@@ -457,7 +439,8 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
 .qbtn.rand{background:linear-gradient(135deg,var(--lilac-l,#efe8ff),#fff)}
 .nav-desk{display:none !important}
 @media (min-width:1024px){ .nav-desk{display:flex !important} }
-@media (min-width:768px){ .quick .qbtn.rand{grid-column:1/-1} }
+.qbtn.av{background:linear-gradient(135deg,var(--peach-l),#fff)}
+@media (min-width:768px){ .quick{grid-template-columns:1fr 1fr} }
 .rs-h{font-size:1.05rem; margin:18px 0 8px}
 .chips{display:flex; flex-wrap:wrap; gap:8px}
 .chipbtn{min-height:48px; padding:8px 14px; border-radius:999px; border:3px solid var(--line); background:#fff; font-weight:800; font-size:.98rem; color:var(--ink)}
@@ -544,6 +527,20 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
   .tabs{flex-wrap:wrap; overflow:visible}
 }
 
+/* ---------- Mode Aventure ---------- */
+.hearts{display:inline-flex; gap:3px; align-items:center; font-size:1.35rem; line-height:1; margin-right:4px}
+.hearts .h{filter:drop-shadow(0 1px 0 rgba(120,20,40,.15)); transition:transform .2s, opacity .2s, filter .2s}
+.hearts .h.off{opacity:.28; filter:grayscale(1)}
+.av-levels{display:grid; gap:12px; margin-top:8px}
+.av-card{display:flex; flex-direction:column; align-items:flex-start; gap:4px; text-align:left; border:3px solid var(--line); background:#fff; border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow); min-height:72px}
+.av-card.selected{border-color:var(--primary); background:linear-gradient(135deg,var(--peach-l),#fff); box-shadow:0 0 0 3px rgba(194,37,107,.15)}
+.av-card b{font-size:1.15rem}
+.av-card small{color:var(--muted); font-size:.88rem; line-height:1.3}
+.av-card .av-emoji{font-size:1.8rem}
+.av-card .av-hearts{color:#e0306f; letter-spacing:2px; font-size:1.15rem}
+.av-card .av-rec{font-weight:700; font-size:.9rem; color:var(--primary-d)}
+@media (min-width:768px){ .av-levels{grid-template-columns:repeat(3,1fr)} }
+
 </style>
 </head>
 <body>
@@ -554,13 +551,13 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
 -->
 <div class="app" id="app">
   <header class="topbar">
-    <button class="brand" aria-label="Chèvra, retour à la carte"><img class="logo" src="icons/icon-192.png" width="48" height="48" alt=""><span>Chèvra</span></button>
+    <button class="brand" aria-label="Chèvra, retour à la carte"><img class="logo" src="icons/icon-192.png?v=4" width="48" height="48" alt=""><span>Chèvra</span></button>
     <div class="pills" id="pills"></div>
     <button class="iconbtn musicbtn" aria-pressed="false" aria-label="Activer la musique">🎵</button>
     <button class="iconbtn soundbtn" aria-pressed="false" aria-label="Couper le son">🔊</button>
   </header>
   <aside class="sidebar" aria-label="Menu">
-    <button class="brand" aria-label="Chèvra, retour à la carte"><img class="logo" src="icons/icon-192.png" width="48" height="48" alt=""><span>Chèvra<br><small class="muted" style="font-size:.8rem;font-weight:600">Révisions CM2</small></span></button>
+    <button class="brand" aria-label="Chèvra, retour à la carte"><img class="logo" src="icons/icon-192.png?v=4" width="48" height="48" alt=""><span>Chèvra<br><small class="muted" style="font-size:.8rem;font-weight:600">Révisions CM2</small></span></button>
     <nav class="mainnav" id="nav" aria-label="Navigation principale"></nav>
     <div class="side-foot">
       <button class="btn musicbtn" aria-pressed="false">🎵 Musique : non</button>
@@ -1689,56 +1686,34 @@ document.addEventListener('visibilitychange', ()=>{ if(document.hidden) musicSto
 ['pointerdown','keydown'].forEach(ev=>document.addEventListener(ev, function first(){ if(S.settings.music) musicSync(); }, {once:true, capture:true}));
 
 
-/* ---------- 5. Mascotte Chèvra (SVG inline, style kawaii chibi) ----------
-   Expressions : classes mood-* (CSS). Accessoires : injectés dans les calques <g data-l="…"> par dressChevra()
-   (voir ACC dans la partie 6). Contour brun chaud #6b4a5a. */
-function chevraSVG(){ return `<svg class="chevra" viewBox="0 -14 200 238" role="img" aria-label="Chèvra, la petite chèvre blanche">
+/* ---------- 5. Mascotte Chèvra (dessin de Damien en image, accessoires en calques SVG) ----------
+   Une seule pose. Humeurs : rebonds, inclinaison, paillettes, larme, bulle « ? ».
+   Accessoires : injectés dans les calques <g data-l="…"> par dressChevra(). */
+function chevraSVG(){ return `<svg class="chevra" viewBox="0 0 200 294" role="img" aria-label="Chèvra, la petite chèvre blanche">
  <g class="c-bg" data-l="fond"></g>
- <ellipse cx="100" cy="217" rx="46" ry="6" fill="#3b2f4a" opacity=".12"/>
  <g class="c-all">
-  <g data-l="dos"></g>
-  <g class="c-tail"><g fill="#6b4a5a" stroke="#6b4a5a" stroke-width="5"><circle cx="138" cy="186" r="9"/><circle cx="147" cy="180" r="7"/></g><g fill="#fff"><circle cx="138" cy="186" r="9"/><circle cx="147" cy="180" r="7"/></g><g data-l="queue"></g></g>
-  <g class="c-legs" stroke="#6b4a5a" stroke-width="3">
-   <rect x="77" y="192" width="19" height="24" rx="9.5" fill="#fff"/><rect x="104" y="192" width="19" height="24" rx="9.5" fill="#fff"/>
-   <path d="M77.5 208 h18 v1 a9 7 0 0 1 -9 7 a9 7 0 0 1 -9 -7z M104.5 208 h18 v1 a9 7 0 0 1 -9 7 a9 7 0 0 1 -9 -7z" fill="#c9a2b8" stroke-width="2.5"/>
-  </g>
-  <g data-l="pattes"></g>
-  <g fill="#6b4a5a" stroke="#6b4a5a" stroke-width="6"><circle cx="100" cy="170" r="32"/><circle cx="74" cy="158" r="13"/><circle cx="126" cy="158" r="13"/><circle cx="72" cy="178" r="13"/><circle cx="128" cy="178" r="13"/><circle cx="86" cy="192" r="12"/><circle cx="114" cy="192" r="12"/><circle cx="100" cy="196" r="12"/></g><g fill="#fff"><circle cx="100" cy="170" r="32"/><circle cx="74" cy="158" r="13"/><circle cx="126" cy="158" r="13"/><circle cx="72" cy="178" r="13"/><circle cx="128" cy="178" r="13"/><circle cx="86" cy="192" r="12"/><circle cx="114" cy="192" r="12"/><circle cx="100" cy="196" r="12"/></g>
-  <path d="M84 176 q6 -5 12 0 M104 184 q6 -5 12 0" stroke="#efe4ee" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-  <g data-l="corps"></g>
-  <g class="c-armL"><g transform="rotate(25 62 166)"><ellipse cx="62" cy="166" rx="10" ry="15" fill="#fff" stroke="#6b4a5a" stroke-width="3"/><path d="M53.5 172 a8.5 7 0 0 0 17 0z" fill="#c9a2b8" stroke="#6b4a5a" stroke-width="2.5"/></g><g data-l="armL"></g></g>
-  <g class="c-armR"><g transform="rotate(-25 138 166)"><ellipse cx="138" cy="166" rx="10" ry="15" fill="#fff" stroke="#6b4a5a" stroke-width="3"/><path d="M129.5 172 a8.5 7 0 0 0 17 0z" fill="#c9a2b8" stroke="#6b4a5a" stroke-width="2.5"/></g><g data-l="armR"></g></g>
-  <g data-l="cou"></g>
+  <g data-l="dos" transform="translate(100 178) scale(0.78) translate(-100 -170)"></g>
+  <image class="c-photo" href="icons/chevra-mascot-1024.webp?v=4" x="0" y="0" width="200" height="294" preserveAspectRatio="xMidYMid meet"/>
+  <g data-l="queue" transform="translate(46 195) scale(0.7) translate(-34 -176)"></g>
+  <g data-l="pattes" transform="translate(89 261) scale(0.9) translate(-88 -220)"></g>
+  <g data-l="corps" transform="translate(102 180) scale(0.72) translate(-100 -170)"></g>
+  <g data-l="armL" transform="translate(91 156) scale(0.8) translate(-68 -202)"></g>
+  <g data-l="cou" transform="translate(108 134) scale(0.7) translate(-100 -148)"></g>
   <g class="c-head">
-   <g class="c-horns">
-    <g class="c-hornL"><path d="M70 48 Q59 30 67 19 Q73 13 78 21 Q83 31 86 46 Z" fill="#ffd9c2" stroke="#6b4a5a" stroke-width="3" stroke-linejoin="round"/><path d="M67 33 q5 2 10 0" stroke="#f3b9a0" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
-    <g class="c-hornR"><path d="M130 48 Q141 30 133 19 Q127 13 122 21 Q117 31 114 46 Z" fill="#ffd9c2" stroke="#6b4a5a" stroke-width="3" stroke-linejoin="round"/><path d="M133 33 q-5 2 -10 0" stroke="#f3b9a0" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>
-   </g>
-   <g class="c-earL"><g transform="rotate(-35 30 94)"><ellipse cx="30" cy="94" rx="22" ry="11.5" fill="#fff" stroke="#6b4a5a" stroke-width="3"/><ellipse cx="27" cy="94" rx="13" ry="5.5" fill="#ffc3d6"/></g><g data-l="earL"></g></g>
-   <g class="c-earR"><g transform="rotate(35 170 94)"><ellipse cx="170" cy="94" rx="22" ry="11.5" fill="#fff" stroke="#6b4a5a" stroke-width="3"/><ellipse cx="173" cy="94" rx="13" ry="5.5" fill="#ffc3d6"/></g><g data-l="earR"></g></g>
-   <ellipse cx="100" cy="92" rx="62" ry="53" fill="#fff" stroke="#6b4a5a" stroke-width="3.2"/>
-      <g data-l="horns"></g>
-   <g class="c-tuft"><g fill="#6b4a5a" stroke="#6b4a5a" stroke-width="5"><circle cx="80" cy="52" r="11"/><circle cx="92" cy="44" r="12"/><circle cx="108" cy="44" r="12"/><circle cx="120" cy="52" r="11"/><circle cx="100" cy="55" r="11"/></g><g fill="#fff"><circle cx="80" cy="52" r="11"/><circle cx="92" cy="44" r="12"/><circle cx="108" cy="44" r="12"/><circle cx="120" cy="52" r="11"/><circle cx="100" cy="55" r="11"/></g></g>
-   <g class="c-brows" stroke="#6b4a5a" stroke-width="3" stroke-linecap="round" fill="none"><path class="b-l" d="M66 74 q9 -5 18 -1"/><path class="b-r" d="M116 73 q9 -4 18 1"/></g>
-   <g class="eyes-open"><g class="eye"><ellipse cx="76" cy="98" rx="13" ry="15.5" fill="#3d2b45"/><ellipse cx="76" cy="103" rx="9" ry="8" fill="#8a63b8" opacity=".85"/><circle cx="72" cy="92" r="5.2" fill="#fff"/><circle cx="81" cy="103" r="2.4" fill="#fff"/><circle cx="82" cy="90" r="1.4" fill="#fff"/></g><g class="eye"><ellipse cx="124" cy="98" rx="13" ry="15.5" fill="#3d2b45"/><ellipse cx="124" cy="103" rx="9" ry="8" fill="#8a63b8" opacity=".85"/><circle cx="120" cy="92" r="5.2" fill="#fff"/><circle cx="129" cy="103" r="2.4" fill="#fff"/><circle cx="130" cy="90" r="1.4" fill="#fff"/></g></g>
-   <g class="eyes-tears"><ellipse cx="76" cy="109" rx="10" ry="3.6" fill="#9fdcff" opacity=".9"/><ellipse cx="124" cy="109" rx="10" ry="3.6" fill="#9fdcff" opacity=".9"/><circle cx="81" cy="95" r="2.6" fill="#fff"/><circle cx="129" cy="95" r="2.6" fill="#fff"/><path d="M63 114 q-3.5 6.5 0 9.5 q3.5 -3 0 -9.5z" fill="#9fdcff" stroke="#6fb8e0" stroke-width="1.2"/></g>
-   <g class="eyes-look"><g class="eye"><ellipse cx="76" cy="94" rx="13" ry="15.5" fill="#3d2b45"/><ellipse cx="76" cy="99" rx="9" ry="8" fill="#8a63b8" opacity=".85"/><circle cx="72" cy="85.6" r="5.2" fill="#fff"/><circle cx="81" cy="99" r="2.4" fill="#fff"/><circle cx="82" cy="83.6" r="1.4" fill="#fff"/></g><g class="eye"><ellipse cx="124" cy="94" rx="13" ry="15.5" fill="#3d2b45"/><ellipse cx="124" cy="99" rx="9" ry="8" fill="#8a63b8" opacity=".85"/><circle cx="120" cy="85.6" r="5.2" fill="#fff"/><circle cx="129" cy="99" r="2.4" fill="#fff"/><circle cx="130" cy="83.6" r="1.4" fill="#fff"/></g></g>
-   <g class="eyes-happy" stroke="#6b4a5a" stroke-width="4.5" fill="none" stroke-linecap="round"><path d="M64 101 q12 -15 24 0"/><path d="M112 101 q12 -15 24 0"/></g>
-   <g class="eyes-wink"><g class="eye"><ellipse cx="76" cy="98" rx="13" ry="15.5" fill="#3d2b45"/><ellipse cx="76" cy="103" rx="9" ry="8" fill="#8a63b8" opacity=".85"/><circle cx="72" cy="92" r="5.2" fill="#fff"/><circle cx="81" cy="103" r="2.4" fill="#fff"/><circle cx="82" cy="90" r="1.4" fill="#fff"/></g><path d="M112 100 q12 -14 24 0" stroke="#6b4a5a" stroke-width="4.5" fill="none" stroke-linecap="round"/></g>
-   <g class="eyes-star" fill="#ffd23f" stroke="#6b4a5a" stroke-width="2.5" stroke-linejoin="round"><path d="M76.0,82.0 L80.5,91.8 L91.2,93.1 L83.3,100.4 L85.4,110.9 L76.0,105.7 L66.6,110.9 L68.7,100.4 L60.8,93.1 L71.5,91.8Z"/><path d="M124.0,82.0 L128.5,91.8 L139.2,93.1 L131.3,100.4 L133.4,110.9 L124.0,105.7 L114.6,110.9 L116.7,100.4 L108.8,93.1 L119.5,91.8Z"/><circle cx="72" cy="93" r="2.5" fill="#fff" stroke="none"/><circle cx="120" cy="93" r="2.5" fill="#fff" stroke="none"/></g>
-   <g class="c-blush"><ellipse cx="57" cy="119" rx="11" ry="6.5" fill="#ffb1c9" opacity=".85"/><ellipse cx="143" cy="119" rx="11" ry="6.5" fill="#ffb1c9" opacity=".85"/><path d="M53 117 l-2 3.5 M58 116 l-2 3.5 M63 117 l-2 3.5 M139 117 l-2 3.5 M144 116 l-2 3.5 M149 117 l-2 3.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".9"/></g>
-   <path d="M95.5 114 q4.5 -3 9 0 q-4.5 6 -9 0z" fill="#f59ab8" stroke="#6b4a5a" stroke-width="1.5" stroke-linejoin="round"/>
-   <path class="m-smile" d="M94.5 121.5 q5.5 5 11 0" stroke="#6b4a5a" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-   <path class="m-omega" d="M91.5 121 q4.25 6 8.5 0 q4.25 6 8.5 0" stroke="#6b4a5a" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-   <path class="m-big" d="M92 120.5 q8 14 16 0 z" fill="#ff7aa5" stroke="#6b4a5a" stroke-width="2.5" stroke-linejoin="round"/>
-   <ellipse class="m-o" cx="100" cy="124" rx="3.4" ry="4" fill="#6b4a5a"/>
-   <path class="m-sad" d="M94 127 q6 -5.5 12 0" stroke="#6b4a5a" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-   <g data-l="joue"></g><g data-l="museau"></g><g data-l="yeux"></g><g data-l="front"></g><g data-l="haut"></g>
-   <g class="c-sweat"><path d="M157 60 q-7 10 0 14 q7 -4 0 -14z" fill="#bfe8ff" stroke="#6fb8e0" stroke-width="1.6"/></g>
+   <g data-l="horns" transform="translate(93 16) scale(0.4) translate(-100 -48)"></g>
+   <g data-l="earL" transform="translate(16 91) scale(0.85) translate(-30 -98)"></g>
+   <g data-l="earR" transform="translate(164 68) scale(0.85) translate(-170 -98)"></g>
+   <g data-l="joue" transform="translate(102 91) scale(0.8) translate(-100 -119)"></g>
+   <g data-l="museau" transform="translate(106 97) scale(0.7) translate(-100 -115)"></g>
+   <g data-l="yeux" transform="translate(106 73) scale(0.82) translate(-100 -98)"></g>
+   <g data-l="front" transform="translate(104 56) scale(0.72) translate(-100 -70)"></g>
+   <g data-l="haut" transform="translate(102 36) scale(0.7) translate(-100 -46)"></g>
   </g>
-  <g class="c-hoofup"><g transform="rotate(-18 52 152)"><ellipse cx="52" cy="152" rx="10.5" ry="15" fill="#fff" stroke="#6b4a5a" stroke-width="3"/><path d="M43 145 a9 8 0 0 1 18 0z" fill="#c9a2b8" stroke="#6b4a5a" stroke-width="2.5"/><ellipse cx="59" cy="135" rx="4.5" ry="7" transform="rotate(15 59 135)" fill="#c9a2b8" stroke="#6b4a5a" stroke-width="2.5"/></g></g>
-  <g class="c-think"><circle cx="157" cy="42" r="3.5" fill="#fff" stroke="#d8cfe6" stroke-width="2"/><circle cx="167" cy="29" r="5.5" fill="#fff" stroke="#d8cfe6" stroke-width="2"/><ellipse cx="183" cy="10" rx="16" ry="14" fill="#fff" stroke="#d8cfe6" stroke-width="2.5"/><text x="183" y="17" font-size="19" font-weight="bold" text-anchor="middle" fill="#7a5cd6">?</text></g>
-  <g class="c-sparkles"><path d="M26.0,43.0 L28.1,49.2 L34.6,49.2 L29.3,53.1 L31.3,59.3 L26.0,55.5 L20.7,59.3 L22.7,53.1 L17.4,49.2 L23.9,49.2Z" fill="#ffd34d"/><path d="M176.0,63.0 L177.6,67.7 L182.7,67.8 L178.7,70.9 L180.1,75.7 L176.0,72.8 L171.9,75.7 L173.3,70.9 L169.3,67.8 L174.4,67.7Z" fill="#ff8fb8"/><path d="M166.0,-2.0 L167.8,3.6 L173.6,3.5 L168.9,6.9 L170.7,12.5 L166.0,9.0 L161.3,12.5 L163.1,6.9 L158.4,3.5 L164.2,3.6Z" fill="#8fd3ff"/><path d="M20.0,144.0 L21.4,148.1 L25.7,148.1 L22.3,150.7 L23.5,154.9 L20.0,152.4 L16.5,154.9 L17.7,150.7 L14.3,148.1 L18.6,148.1Z" fill="#ffd34d"/></g>
+  <g data-l="armR" transform="translate(174 81) scale(0.8) translate(-176 -38)"></g>
+  <g class="c-tears"><path d="M78 88 q-3.6 7 0 11 q3.6 -3.2 0 -11z" fill="#9fdcff" stroke="#6fb8e0" stroke-width="1.2"/></g>
+  <g class="c-sweat"><path d="M150 48 q-7 10 0 14 q7 -4 0 -14z" fill="#bfe8ff" stroke="#6fb8e0" stroke-width="1.6"/></g>
+  <g class="c-think"><circle cx="158" cy="28" r="3.2" fill="#fff" stroke="#d8cfe6" stroke-width="1.8"/><circle cx="168" cy="16" r="5" fill="#fff" stroke="#d8cfe6" stroke-width="1.8"/><ellipse cx="184" cy="2" rx="15" ry="13" fill="#fff" stroke="#d8cfe6" stroke-width="2.2"/><text x="184" y="8" font-size="16" font-weight="bold" text-anchor="middle" fill="#7a5cd6">?</text></g>
+  <g class="c-sparkles"><path d="M22.0,40.0 L23.9,45.4 L29.6,45.5 L25.0,49.0 L26.7,54.5 L22.0,51.2 L17.3,54.5 L19.0,49.0 L14.4,45.5 L20.1,45.4Z" fill="#ffd34d"/><path d="M178.0,33.0 L179.6,37.7 L184.7,37.8 L180.7,40.9 L182.1,45.7 L178.0,42.8 L173.9,45.7 L175.3,40.9 L171.3,37.8 L176.4,37.7Z" fill="#ff8fb8"/><path d="M168.0,0.0 L169.8,5.6 L175.6,5.5 L170.9,8.9 L172.7,14.5 L168.0,11.0 L163.3,14.5 L165.1,8.9 L160.4,5.5 L166.2,5.6Z" fill="#8fd3ff"/><path d="M28.0,194.0 L29.4,198.1 L33.7,198.1 L30.3,200.7 L31.5,204.9 L28.0,202.4 L24.5,204.9 L25.7,200.7 L22.3,198.1 L26.6,198.1Z" fill="#ffd34d"/></g>
  </g>
 </svg>`; }
 // Met à jour toutes les Chèvra animées (panneau PC + écrans) ; les aperçus [data-fixed] ne changent pas d'humeur.
@@ -1791,7 +1766,7 @@ function phrase(k){ return pick(PHRASES[k]).replace('{n}', S.name||'toi'); }
 const SLOTS = { haut:'Haut de tête', front:'Front', oreilleG:'Oreille gauche', oreilleD:'Oreille droite', corneG:'Corne gauche', corneD:'Corne droite',
   yeux:'Yeux', joue:'Joues', museau:'Museau', cou:'Cou', corps:'Corps', dos:'Dos', patteAvant:'Pattes avant', pattes:'Sabots', queue:'Queue', objet:'Objet tenu', fond:'Décor' };
 const CATS = [ ['tete','🎩','Tête'], ['oreilles','🎀','Oreilles & cornes','Oreilles'], ['visage','👓','Visage'], ['cou','🧣','Cou'], ['corps','👕','Corps & dos','Corps'], ['pattes','👟','Pattes & queue','Pattes'], ['objets','🎈','Objets'], ['decors','🌈','Décors'] ];
-const _O='#6b4a5a';
+const _O='#5c4038';
 function _star(cx,cy,r,ri){ ri=ri||r*.48; let p=''; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, q=i%2?ri:r; p+=(i?'L':'M')+(cx+q*Math.cos(a)).toFixed(1)+','+(cy+q*Math.sin(a)).toFixed(1); } return p+'Z'; }
 function _heart(x,y,s){ return `M${x} ${y+s*.35} C${x-s*.1} ${y-s*.05} ${x-s*.55} ${y-s*.05} ${x-s*.55} ${y-s*.38} C${x-s*.55} ${y-s*.68} ${x-s*.15} ${y-s*.72} ${x} ${y-s*.45} C${x+s*.15} ${y-s*.72} ${x+s*.55} ${y-s*.68} ${x+s*.55} ${y-s*.38} C${x+s*.55} ${y-s*.05} ${x+s*.1} ${y-s*.05} ${x} ${y+s*.35}Z`; }
 function _flower(x,y,r,col,mid='#ffd36e'){ let s=''; for(let i=0;i<5;i++){ const a=-Math.PI/2+i*2*Math.PI/5; s+=`<circle cx="${(x+r*Math.cos(a)).toFixed(1)}" cy="${(y+r*Math.sin(a)).toFixed(1)}" r="${r}" fill="${col}" stroke="${_O}" stroke-width="1.4"/>`; } return s+`<circle cx="${x}" cy="${y}" r="${r*.75}" fill="${mid}" stroke="${_O}" stroke-width="1.4"/>`; }
@@ -1819,9 +1794,9 @@ const ACCESSOIRES = [
   {id:'daisy', nom:'Marguerite', cat:'oreilles', prix:15, slots:['oreilleD'], parts:[['earR',_flower(173,89,5.5,'#fff')]]},
   {id:'earringR', nom:'Boucle d\'oreille cœur', cat:'oreilles', prix:20, slots:['oreilleD'], parts:[['earR',`<path d="M186 105 v8" stroke="#e8a800" stroke-width="2.5"/><circle cx="186" cy="104" r="2.5" fill="#ffd34d" stroke="${_O}" stroke-width="1.2"/><path d="${_heart(186,120,15)}" fill="#ff5c93" stroke="${_O}" stroke-width="1.5"/>`]]},
   {id:'pinR', nom:'Pin\'s fraise', cat:'oreilles', prix:18, slots:['oreilleD'], parts:[['earR',`<path d="M174 88 q-8 1 -8 9 q0 8 8 11 q8 -3 8 -11 q0 -8 -8 -9z" fill="#ff6b6b" stroke="${_O}" stroke-width="1.5"/><path d="M168 88 q6 -6 12 0 q-6 3 -12 0z" fill="#5fbf7f"/><circle cx="171" cy="96" r="1" fill="#fff"/><circle cx="177" cy="99" r="1" fill="#fff"/><circle cx="173" cy="102" r="1" fill="#fff"/>`]]},
-  {id:'hornrings', nom:'Anneaux de cornes dorés', cat:'oreilles', recompense:{badge:'chrono', txt:'Réussir 15 calculs au chrono-calcul'}, slots:['corneG','corneD'], parts:[['horns',`<path d="M66 33 q6 3 11 -1" stroke="${_O}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M66 33 q6 3 11 -1" stroke="#ffd34d" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M134 33 q-6 3 -11 -1" stroke="${_O}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M134 33 q-6 3 -11 -1" stroke="#ffd34d" stroke-width="4" fill="none" stroke-linecap="round"/>`]]},
-  {id:'hornflower', nom:'Fleurette de corne', cat:'oreilles', prix:20, slots:['corneG'], parts:[['horns',_flower(66,20,4,'#c3a6ff')]]},
-  {id:'pompom', nom:'Pompon de corne', cat:'oreilles', prix:20, slots:['corneD'], parts:[['horns',`<circle cx="134" cy="18" r="8" fill="#ffd36e" stroke="${_O}" stroke-width="2"/><path d="M128 14 l12 8 M128 22 l12 -8 M134 10 v16" stroke="#f4b23c" stroke-width="1.6"/>`]]},
+  {id:'hornrings', nom:'Anneaux de cornes dorés', cat:'oreilles', recompense:{badge:'chrono', txt:'Réussir 15 calculs au chrono-calcul'}, slots:['corneG','corneD'], parts:[['horns',`<path d="M36 20 q10 8 16 14" stroke="${_O}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M36 20 q10 8 16 14" stroke="#ffd34d" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M164 20 q-10 8 -16 14" stroke="${_O}" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M164 20 q-10 8 -16 14" stroke="#ffd34d" stroke-width="4" fill="none" stroke-linecap="round"/>`]]},
+  {id:'hornflower', nom:'Fleurette de corne', cat:'oreilles', prix:20, slots:['corneG'], parts:[['horns',_flower(20,44,4,'#c3a6ff')]]},
+  {id:'pompom', nom:'Pompon de corne', cat:'oreilles', prix:20, slots:['corneD'], parts:[['horns',`<circle cx="180" cy="46" r="8" fill="#ffd36e" stroke="${_O}" stroke-width="2"/><path d="M168 40 l12 8 M168 52 l12 -8 M174 36 v16" stroke="#f4b23c" stroke-width="1.6"/>`]]},
   /* ----- Visage ----- */
   {id:'glasses', nom:'Lunettes de savante', cat:'visage', prix:30, slots:['yeux'], parts:[['yeux',`<circle cx="76" cy="98" r="19" fill="rgba(255,255,255,.15)" stroke="#6a4bc4" stroke-width="4"/><circle cx="124" cy="98" r="19" fill="rgba(255,255,255,.15)" stroke="#6a4bc4" stroke-width="4"/><path d="M95 96 q5 -5 10 0 M57 94 L42 88 M143 94 L158 88" stroke="#6a4bc4" stroke-width="4" fill="none" stroke-linecap="round"/>`]]},
   {id:'sunglasses', nom:'Lunettes de soleil', cat:'visage', prix:50, slots:['yeux'], parts:[['yeux',`<path d="M54 86 h42 q0 27 -21 27 q-21 0 -21 -27z" fill="#2d2440" ${_S}/><path d="M104 86 h42 q0 27 -21 27 q-21 0 -21 -27z" fill="#2d2440" ${_S}/><path d="M96 89 h8 M54 88 L42 84 M146 88 L158 84" stroke="#2d2440" stroke-width="4" stroke-linecap="round"/><path d="M61 92 l8 0 M111 92 l8 0" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>`]]},
@@ -1836,28 +1811,45 @@ const ACCESSOIRES = [
   {id:'lei', nom:'Collier de fleurs', cat:'cou', prix:40, slots:['cou'], parts:[['cou',`${_flower(66,146,4,'#ff8fb8')}${_flower(80,154,4,'#ffd36e','#ff8fb8')}${_flower(94,158,4,'#c3a6ff')}${_flower(108,158,4,'#8fd3ff')}${_flower(122,154,4,'#ff8fb8')}${_flower(135,146,4,'#ffd36e','#ff8fb8')}`]]},
   {id:'bell', nom:'Clochette de chèvre', cat:'cou', recompense:{badge:'defi5', txt:'Terminer 5 défis du jour'}, slots:['cou'], parts:[['cou',`<path d="M60 142 Q100 160 140 142" stroke="${_O}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M60 142 Q100 160 140 142" stroke="#e0306f" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M90 168 Q90 152 100 152 Q110 152 110 168 Z" fill="#ffd34d" ${_S}/><circle cx="100" cy="170" r="3" fill="#e8a800" stroke="${_O}" stroke-width="1.2"/>`]]},
   {id:'medal', nom:'Médaille d\'or', cat:'cou', recompense:{badge:'cent', txt:'Donner 100 bonnes réponses'}, slots:['cou'], parts:[['cou',`<path d="M82 144 L96 172 L104 172 L118 144 L108 144 L100 160 L92 144 Z" fill="#5bc0ff" ${_S}/><circle cx="100" cy="178" r="11" fill="#ffd34d" ${_S}/><path d="${_star(100,178,6)}" fill="#fff4b8"/>`]]},
+  {id:'collier_cloche', nom:'Collier et clochette', cat:'cou', recompense:{badge:'parfait', txt:'Obtenir 3 étoiles à un niveau'}, slots:['cou'], parts:[['cou',`<path d="M68 142 Q100 158 132 142" stroke="${_O}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M68 142 Q100 158 132 142" stroke="#8a5a32" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M91 170 Q91 154 100 152 Q109 154 109 170 Q100 176 91 170 Z" fill="#ffd34d" ${_S}/><ellipse cx="100" cy="160" rx="5" ry="3" fill="#ffe9a0"/><circle cx="100" cy="171" r="2.6" fill="#e8a800" stroke="${_O}" stroke-width="1.2"/>`]]},
   /* ----- Corps & dos ----- */
   {id:'sweater', nom:'Pull tout doux', cat:'corps', prix:55, slots:['corps'], parts:[['corps',`<path d="M64 158 Q66 140 100 140 Q134 140 136 158 L138 196 Q100 210 62 196 Z" fill="#9ad8ff" ${_S}/><path d="M64 172 Q100 180 136 172 M63 186 Q100 195 137 186" stroke="#d6f0ff" stroke-width="4" fill="none"/><path d="M80 143 Q100 152 120 143" stroke="#6fb8e0" stroke-width="5" fill="none" stroke-linecap="round"/>`]]},
   {id:'tshirt', nom:'T-shirt étoile', cat:'corps', prix:35, slots:['corps'], parts:[['corps',`<path d="M64 158 Q66 140 100 140 Q134 140 136 158 L138 196 Q100 210 62 196 Z" fill="#ffe08a" ${_S}/><path d="${_star(100,176,12)}" fill="#ff8fb8" stroke="${_O}" stroke-width="1.8" stroke-linejoin="round"/>`]]},
   {id:'tutu', nom:'Tutu de danseuse', cat:'corps', prix:50, slots:['corps'], parts:[['corps',`<path d="M60 186 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 q8 14 16 2 L134 182 Q100 196 66 182 Z" fill="#ffc0dc" ${_S}/><path d="M66 184 Q100 194 134 184" stroke="#ff8fb8" stroke-width="4" fill="none"/>`]]},
   {id:'cape', nom:'Cape de héroïne', cat:'corps', recompense:{perfect10:1, txt:'Faire un sans-faute au défi aléatoire (10 questions ou plus)'}, slots:['dos'], parts:[['dos',`<path d="M66 146 Q100 136 134 146 L162 212 Q100 224 38 212 Z" fill="#e0306f" ${_S}/><path d="M70 150 L48 208 M130 150 L152 208" stroke="#b81f55" stroke-width="2.5" fill="none"/>`],['cou',`<circle cx="70" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/><circle cx="130" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/>`]]},
   {id:'wings', nom:'Ailes de papillon', cat:'corps', prix:80, slots:['dos'], parts:[['dos',`<path d="M74 160 C40 120 10 140 22 168 C10 190 44 206 74 182 Z" fill="#c3a6ff" ${_S}/><path d="M126 160 C160 120 190 140 178 168 C190 190 156 206 126 182 Z" fill="#c3a6ff" ${_S}/><circle cx="36" cy="160" r="6" fill="#ffd1e3"/><circle cx="164" cy="160" r="6" fill="#ffd1e3"/><circle cx="42" cy="184" r="4" fill="#fff"/><circle cx="158" cy="184" r="4" fill="#fff"/>`]]},
-  {id:'mittens', nom:'Moufles douillettes', cat:'corps', prix:30, slots:['patteAvant'], parts:[['armL',`<ellipse cx="57" cy="176" rx="10" ry="9" fill="#ff8fb8" ${_S}/><path d="M48 170 h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`],['armR',`<ellipse cx="143" cy="176" rx="10" ry="9" fill="#ff8fb8" ${_S}/><path d="M134 170 h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`]]},
-  {id:'bracelet', nom:'Bracelet de perles', cat:'corps', prix:20, slots:['patteAvant'], parts:[['armL',`<g stroke="${_O}" stroke-width="1.2"><circle cx="51" cy="168" r="3.2" fill="#ff8fb8"/><circle cx="56" cy="171" r="3.2" fill="#ffd36e"/><circle cx="62" cy="172" r="3.2" fill="#8fd3ff"/><circle cx="67" cy="170" r="3.2" fill="#c3a6ff"/></g>`]]},
+  {id:'sac_bleu', nom:'Sac à dos bleu', cat:'corps', recompense:{badge:'premier', txt:'Terminer un premier niveau'}, slots:['dos'], parts:[['dos',`<path d="M38 150 Q34 138 48 136 L64 146 L60 198 Q34 194 36 168 Z" fill="#4d8fd6" ${_S}/><path d="M162 150 Q166 138 152 136 L136 146 L140 198 Q166 194 164 168 Z" fill="#4d8fd6" ${_S}/><path d="M56 182 Q100 212 144 182 L148 204 Q100 226 52 204 Z" fill="#4d8fd6" ${_S}/><path d="M44 164 h14 M156 164 h-14" stroke="#ffd34d" stroke-width="3.2" stroke-linecap="round"/><path d="M50 178 q-4 10 0 22 M150 178 q4 10 0 22" stroke="#3a6fad" stroke-width="2" fill="none"/>`],['cou',`<path d="M80 138 Q64 152 48 168" fill="none" stroke="${_O}" stroke-width="5.2" stroke-linecap="round"/><path d="M80 138 Q64 152 48 168" fill="none" stroke="#7eb3ee" stroke-width="2.8" stroke-linecap="round"/><path d="M120 138 Q136 152 152 168" fill="none" stroke="${_O}" stroke-width="5.2" stroke-linecap="round"/><path d="M120 138 Q136 152 152 168" fill="none" stroke="#7eb3ee" stroke-width="2.8" stroke-linecap="round"/>`]]},
+  {id:'mittens', nom:'Moufles douillettes', cat:'corps', prix:30, slots:['patteAvant'], parts:[['armL',`<ellipse cx="68" cy="202" rx="11" ry="9" fill="#ff8fb8" ${_S}/><path d="M58 197 h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`],['armR',`<g transform="rotate(18 176 38)"><ellipse cx="176" cy="38" rx="11" ry="9" fill="#ff8fb8" ${_S}/><path d="M166 33 h20" stroke="#fff" stroke-width="3" stroke-linecap="round"/></g>`]]},
+  {id:'bracelet', nom:'Bracelet de perles', cat:'corps', prix:20, slots:['patteAvant'], parts:[['armL',`<g stroke="${_O}" stroke-width="1.2"><circle cx="62" cy="178" r="3.2" fill="#ff8fb8"/><circle cx="67" cy="181" r="3.2" fill="#ffd36e"/><circle cx="73" cy="184" r="3.2" fill="#8fd3ff"/><circle cx="78" cy="182" r="3.2" fill="#c3a6ff"/></g>`]]},
   /* ----- Pattes & queue ----- */
-  {id:'sneakers', nom:'Baskets', cat:'pattes', prix:45, slots:['pattes'], parts:[['pattes',`<path d="M73 203 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z M104 203 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z" fill="#ff6b6b" ${_S}/><path d="M70 213 h30 M101 213 h30" stroke="#fff" stroke-width="3.5"/><path d="M80 206 l8 0 M111 206 l8 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`]]},
-  {id:'boots', nom:'Bottes de pluie', cat:'pattes', prix:40, slots:['pattes'], parts:[['pattes',`<path d="M74 192 h21 v20 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z M105 192 h21 v20 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z" fill="#ffd34d" ${_S}/><path d="M74 197 h21 M105 197 h21" stroke="#e8a800" stroke-width="2.5"/>`]]},
-  {id:'socks', nom:'Chaussettes rayées', cat:'pattes', prix:20, slots:['pattes'], parts:[['pattes',`<g stroke="#ff8fb8" stroke-width="3.5"><path d="M77 196 h17 M77 201 h17 M106 196 h17 M106 201 h17"/></g><g stroke="#8fd3ff" stroke-width="3.5"><path d="M77 198.5 h17 M77 203.5 h17 M106 198.5 h17 M106 203.5 h17"/></g>`]]},
-  {id:'tailbow', nom:'Nœud de queue', cat:'pattes', prix:15, slots:['queue'], parts:[['queue',_bow(154,180,.6,'#c3a6ff','#7a5cd6',30)]]},
+  {id:'sneakers', nom:'Baskets', cat:'pattes', prix:45, slots:['pattes'], parts:[['pattes',`<path d="M73 217 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z M105 217 h23 q4 0 4 6 v4 q0 4 -4 4 h-23 q-4 0 -4 -4 v-4 q0 -6 4 -6z" fill="#ff6b6b" ${_S}/><path d="M70 227 h30 M102 227 h30" stroke="#fff" stroke-width="3.5"/><path d="M80 220 l8 0 M112 220 l8 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`]]},
+  {id:'boots', nom:'Bottes de pluie', cat:'pattes', prix:40, slots:['pattes'], parts:[['pattes',`<path d="M74 200 h21 v26 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z M107 200 h21 v26 q0 5 -5 5 h-17 q-5 0 -5 -5 v-2 q0 -4 6 -4z" fill="#ffd34d" ${_S}/><path d="M74 206 h21 M107 206 h21" stroke="#e8a800" stroke-width="2.5"/>`]]},
+  {id:'socks', nom:'Chaussettes rayées', cat:'pattes', prix:20, slots:['pattes'], parts:[['pattes',`<g stroke="#ff8fb8" stroke-width="3.5"><path d="M77 206 h17 M77 211 h17 M109 206 h17 M109 211 h17"/></g><g stroke="#8fd3ff" stroke-width="3.5"><path d="M77 208.5 h17 M77 213.5 h17 M109 208.5 h17 M109 213.5 h17"/></g>`]]},
+  {id:'tailbow', nom:'Nœud de queue', cat:'pattes', prix:15, slots:['queue'], parts:[['queue',_bow(34,176,.6,'#c3a6ff','#7a5cd6',-20)]]},
   /* ----- Objets tenus ----- */
-  {id:'balloon', nom:'Ballon cœur', cat:'objets', prix:30, slots:['objet'], parts:[['armR',`<path d="M146 176 Q176 120 182 62" stroke="${_O}" stroke-width="1.6" fill="none"/><path d="${_heart(184,48,40)}" fill="#ff5c93" stroke="${_O}" stroke-width="2.2"/><path d="M174 38 q3 -5 8 -5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>`]]},
-  {id:'wand', nom:'Baguette magique', cat:'objets', recompense:{badge:'revision', txt:'Terminer une révision intelligente'}, slots:['objet'], parts:[['armR',`<path d="M144 178 L166 138" stroke="${_O}" stroke-width="6" stroke-linecap="round"/><path d="M144 178 L166 138" stroke="#c3a6ff" stroke-width="3" stroke-linecap="round"/><path d="${_star(168,134,11)}" fill="#ffd34d" stroke="${_O}" stroke-width="2" stroke-linejoin="round"/>`]]},
-  {id:'lollipop', nom:'Sucette arc-en-ciel', cat:'objets', prix:20, slots:['objet'], parts:[['armR',`<path d="M145 178 L158 150" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M145 178 L158 150" stroke="${_O}" stroke-width="1" fill="none"/><circle cx="162" cy="140" r="13" fill="#fff" ${_S}/><path d="M162 140 m-9 0 a9 9 0 0 1 18 0 a6 6 0 0 1 -12 0 a3 3 0 0 1 6 0" stroke="#ff5c93" stroke-width="3" fill="none"/><path d="M162 140 m-11 3 a11 11 0 0 0 22 0" stroke="#8fd3ff" stroke-width="3" fill="none"/>`]]},
-  {id:'book', nom:'Livre de sciences', cat:'objets', prix:25, slots:['objet'], parts:[['armR',`<g transform="rotate(-12 152 170)"><rect x="138" y="156" width="28" height="22" rx="3" fill="#3cc59a" ${_S}/><path d="M152 156 v22" stroke="${_O}" stroke-width="2"/><path d="${_star(159,167,4)}" fill="#fff"/></g>`]]},
+  {id:'balloon', nom:'Ballon cœur', cat:'objets', prix:30, slots:['objet'], parts:[['armR',`<path d="M176 38 Q186 8 188 -20" stroke="${_O}" stroke-width="1.6" fill="none"/><path d="${_heart(192,-28,36)}" fill="#ff5c93" stroke="${_O}" stroke-width="2.2"/><path d="M182 -36 q3 -5 8 -5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>`]]},
+  {id:'wand', nom:'Baguette magique', cat:'objets', recompense:{badge:'revision', txt:'Terminer une révision intelligente'}, slots:['objet'], parts:[['armR',`<path d="M174 42 L188 8" stroke="${_O}" stroke-width="6" stroke-linecap="round"/><path d="M174 42 L188 8" stroke="#c3a6ff" stroke-width="3" stroke-linecap="round"/><path d="${_star(190,4,11)}" fill="#ffd34d" stroke="${_O}" stroke-width="2" stroke-linejoin="round"/>`]]},
+  {id:'lollipop', nom:'Sucette arc-en-ciel', cat:'objets', prix:20, slots:['objet'], parts:[['armR',`<path d="M174 40 L186 12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M174 40 L186 12" stroke="${_O}" stroke-width="1" fill="none"/><circle cx="190" cy="0" r="13" fill="#fff" ${_S}/><path d="M190 0 m-9 0 a9 9 0 0 1 18 0 a6 6 0 0 1 -12 0 a3 3 0 0 1 6 0" stroke="#ff5c93" stroke-width="3" fill="none"/><path d="M190 0 m-11 3 a11 11 0 0 0 22 0" stroke="#8fd3ff" stroke-width="3" fill="none"/>`]]},
+  {id:'book', nom:'Livre de sciences', cat:'objets', prix:25, slots:['objet'], parts:[['armR',`<g transform="rotate(16 176 52)"><rect x="162" y="38" width="28" height="22" rx="3" fill="#3cc59a" ${_S}/><path d="M176 38 v22" stroke="${_O}" stroke-width="2"/><path d="${_star(183,49,4)}" fill="#fff"/></g>`]]},
   /* ----- Décors ----- */
   {id:'rainbow', nom:'Arc-en-ciel', cat:'decors', recompense:{badge:'explo', txt:'Visiter les 6 îles'}, slots:['fond'], parts:[['fond',`<g fill="none" stroke-width="10" opacity=".9"><path d="M8 200 A92 92 0 0 1 192 200" stroke="#ffb3b3"/><path d="M18 200 A82 82 0 0 1 182 200" stroke="#ffe08a"/><path d="M28 200 A72 72 0 0 1 172 200" stroke="#b5ebc9"/><path d="M38 200 A62 62 0 0 1 162 200" stroke="#b9e3ff"/></g>`]]},
   {id:'starsky', nom:'Ciel étoilé', cat:'decors', recompense:{badge:'etoiles30', txt:'Gagner 30 étoiles'}, slots:['fond'], parts:[['fond',`<circle cx="100" cy="110" r="98" fill="#e6dcff" opacity=".8"/><path d="${_star(30,40,8)}" fill="#ffd34d"/><path d="${_star(172,48,6)}" fill="#ffd34d"/><path d="${_star(20,130,5)}" fill="#fff"/><path d="${_star(184,140,7)}" fill="#ffd34d"/><path d="${_star(150,6,5)}" fill="#fff"/><circle cx="56" cy="16" r="2.5" fill="#fff"/><circle cx="186" cy="96" r="2.5" fill="#fff"/>`]]},
-  {id:'clouds', nom:'Petits nuages', cat:'decors', prix:35, slots:['fond'], parts:[['fond',`<g fill="#fff" stroke="#d8e9f5" stroke-width="2"><path d="M14 60 a10 10 0 0 1 16 -8 a12 12 0 0 1 22 4 a8 8 0 0 1 0 16 h-36 a7 7 0 0 1 -2 -12z"/><path d="M150 30 a9 9 0 0 1 14 -7 a11 11 0 0 1 20 4 a7 7 0 0 1 0 14 h-32 a6 6 0 0 1 -2 -11z"/><path d="M160 150 a8 8 0 0 1 12 -6 a10 10 0 0 1 18 3 a6 6 0 0 1 0 12 h-28 a5 5 0 0 1 -2 -9z"/></g>`]]}
+  {id:'clouds', nom:'Petits nuages', cat:'decors', prix:35, slots:['fond'], parts:[['fond',`<g fill="#fff" stroke="#d8e9f5" stroke-width="2"><path d="M14 60 a10 10 0 0 1 16 -8 a12 12 0 0 1 22 4 a8 8 0 0 1 0 16 h-36 a7 7 0 0 1 -2 -12z"/><path d="M150 30 a9 9 0 0 1 14 -7 a11 11 0 0 1 20 4 a7 7 0 0 1 0 14 h-32 a6 6 0 0 1 -2 -11z"/><path d="M160 150 a8 8 0 0 1 12 -6 a10 10 0 0 1 18 3 a6 6 0 0 1 0 12 h-28 a5 5 0 0 1 -2 -9z"/></g>`]]},
+
+  /* ----- Récompenses du mode Aventure ----- */
+  {id:'av_bandana', nom:'Bandana de voyage', cat:'tete', recompense:{badge:'av_premier', txt:'Terminer une première partie d\'aventure'}, slots:['front'], parts:[['front',`<path d="M52 84 Q100 58 148 84 L146 96 Q100 72 54 96 Z" fill="#e0306f" ${_S}/><path d="M148 84 l16 10 l-4 10 l-14 -12z" fill="#e0306f" ${_S}/><path d="M70 78 Q100 66 130 78" stroke="#fff" stroke-width="2.5" fill="none" opacity=".7"/>`]]},
+  {id:'av_tricorne', nom:'Tricorne de capitaine', cat:'tete', recompense:{badge:'av_trio', txt:'Jouer les 3 niveaux du mode Aventure'}, slots:['haut'], parts:[['haut',`<path d="M46 58 Q100 20 154 58 Q148 44 100 38 Q52 44 46 58 Z" fill="#2c3a4a" ${_S}/><path d="M54 56 Q100 36 146 56 L140 68 Q100 54 60 68 Z" fill="#3d4e62"/><path d="M100 38 l0 -10" stroke="#c2256b" stroke-width="3"/><path d="${_star(100,24,6)}" fill="#ffd34d" stroke="${_O}" stroke-width="1.2"/>`]]},
+  {id:'av_boussole', nom:'Boussole dorée', cat:'objets', recompense:{badge:'av_serie10', txt:'Faire 10 bonnes réponses d\'affilée en aventure'}, slots:['objet'], parts:[['armR',`<g transform="translate(176 52)"><circle r="16" fill="#fff4cf" ${_S}/><circle r="12" fill="#e8f6ff" stroke="${_O}" stroke-width="1.4"/><path d="M0 -9 L3 0 L0 9 L-3 0 Z" fill="#e0306f"/><path d="M-9 0 L0 -3 L9 0 L0 3 Z" fill="#2e8a3c"/><circle r="2.2" fill="#ffd34d" stroke="${_O}" stroke-width="1"/></g>`]]},
+  {id:'av_carte', nom:'Carte au trésor', cat:'objets', recompense:{badge:'av_serie25', txt:'Faire 25 bonnes réponses d\'affilée en aventure'}, slots:['objet'], parts:[['armR',`<g transform="rotate(12 176 54)"><path d="M160 36 h34 v28 h-34 Z" fill="#f6e2a8" ${_S}/><path d="M166 44 q8 4 12 -2 q6 8 14 2" stroke="#8a5a32" stroke-width="1.8" fill="none"/><circle cx="180" cy="54" r="3" fill="#e0306f"/><path d="${_star(188,42,3.5)}" fill="#e0306f"/></g>`]]},
+  {id:'av_safari', nom:'Chapeau d\'exploratrice', cat:'tete', recompense:{badge:'av_serie50', txt:'Faire 50 bonnes réponses d\'affilée en aventure'}, slots:['haut'], parts:[['haut',`<path d="M70 48 Q72 14 100 14 Q128 14 130 48 Z" fill="#d4a056" ${_S}/><ellipse cx="100" cy="48" rx="62" ry="10" fill="#e0b36a" ${_S}/><path d="M70 36 H130" stroke="#8a5a32" stroke-width="6"/><path d="M70 36 H130" stroke="#c2256b" stroke-width="2.5"/>`]]},
+  {id:'av_couronne', nom:'Couronne d\'aventurière', cat:'tete', recompense:{badge:'av_serie100', txt:'Faire 100 bonnes réponses d\'affilée en aventure'}, slots:['haut'], parts:[['haut',`<path d="M70 48 L76 10 L90 30 L100 4 L110 30 L124 10 L130 48 Z" fill="#ffd34d" ${_S}/><path d="M72 40 H128" stroke="#e8a800" stroke-width="3"/><circle cx="100" cy="22" r="4.5" fill="#5bc0ff"/><circle cx="82" cy="28" r="3" fill="#e0306f"/><circle cx="118" cy="28" r="3" fill="#3cc59a"/><path d="${_star(100,4,5)}" fill="#fff"/>`]]},
+  {id:'av_halo', nom:'Étoile du courage', cat:'decors', recompense:{badge:'av_difficile10', txt:'Réussir 10 questions dans une partie en Difficile'}, slots:['fond'], parts:[['fond',`<g opacity=".95"><path d="${_star(100,96,90,42)}" fill="rgba(255,211,77,.28)" stroke="#ffd34d" stroke-width="2"/><path d="${_star(30,40,10)}" fill="#ffd34d"/><path d="${_star(170,46,8)}" fill="#ffd34d"/><path d="${_star(24,150,7)}" fill="#ffe08a"/></g>`]]},
+  {id:'av_cape_mer', nom:'Cape des mers', cat:'corps', recompense:{badge:'av_difficile25', txt:'Réussir 25 questions dans une partie en Difficile'}, slots:['dos'], parts:[['dos',`<path d="M66 146 Q100 136 134 146 L168 214 Q100 230 32 214 Z" fill="#2f6f9f" ${_S}/><path d="M74 160 Q100 176 126 160 M70 178 Q100 196 130 178" stroke="#7ec8e8" stroke-width="3" fill="none" opacity=".8"/>`],['cou',`<circle cx="70" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/><circle cx="130" cy="148" r="5" fill="#ffd34d" stroke="${_O}" stroke-width="1.6"/>`]]},
+  {id:'av_fanion', nom:'Fanion de record', cat:'objets', recompense:{badge:'av_records3', txt:'Battre 3 fois un record d\'aventure'}, slots:['objet'], parts:[['armR',`<path d="M174 40 L178 -8" stroke="${_O}" stroke-width="4" stroke-linecap="round"/><path d="M178 -6 L210 6 L178 18 Z" fill="#e0306f" ${_S}/><path d="${_star(192,6,6)}" fill="#ffd34d"/>`]]},
+  {id:'av_trophee', nom:'Trophée d\'or', cat:'objets', recompense:{badge:'av_records10', txt:'Battre 10 fois un record d\'aventure'}, slots:['objet'], parts:[['armR',`<g transform="translate(176 52)"><path d="M-10 8 h20 v8 h-20 Z" fill="#c9a24a" ${_S}/><rect x="-5" y="0" width="10" height="10" fill="#ffd34d" ${_S}/><path d="M-12 -18 Q-12 0 0 0 Q12 0 12 -18 Q0 -22 -12 -18 Z" fill="#ffd34d" ${_S}/><path d="M-14 -14 Q-22 -8 -14 -2 M14 -14 Q22 -8 14 -2" stroke="#e8a800" stroke-width="2.5" fill="none"/></g>`]]},
+  {id:'av_medaillon', nom:'Médaillon des îles', cat:'cou', recompense:{badge:'av_sujet', txt:'Réussir 8 questions d\'affilée dans la même matière en aventure'}, slots:['cou'], parts:[['cou',`<path d="M86 144 L94 166 L106 166 L114 144" stroke="${_O}" stroke-width="3" fill="none"/><circle cx="100" cy="174" r="12" fill="#8fd3ff" ${_S}/><path d="M92 176 Q100 166 108 176 Q100 180 92 176 Z" fill="#7fe0c3" stroke="${_O}" stroke-width="1.2"/>`]]},
+  {id:'av_ailes', nom:'Ailes d\'exploratrice', cat:'corps', recompense:{badge:'av_sixsujets', txt:'Réussir une série parfaite dans les 6 matières'}, slots:['dos'], parts:[['dos',`<path d="M74 158 C28 100 8 130 20 168 C8 200 50 214 74 184 Z" fill="#ffe08a" ${_S}/><path d="M126 158 C172 100 192 130 180 168 C192 200 150 214 126 184 Z" fill="#ffe08a" ${_S}/><path d="${_star(36,150,8)}" fill="#ffd34d"/><path d="${_star(164,150,8)}" fill="#ffd34d"/>`]]}
+
 ];
 const ACC = Object.fromEntries(ACCESSOIRES.map(a=>[a.id,a]));
 const LAYER_ORDER_IN = id=>ACCESSOIRES.indexOf(ACC[id]);
@@ -1900,13 +1892,26 @@ const BADGES = [
   {id:'cent', e:'💯', nom:'Cent bonnes réponses', d:'Donner 100 bonnes réponses'},
   {id:'chrono', e:'⏱️', nom:'Éclair du calcul', d:'Réussir 15 calculs au chrono'},
   {id:'coquette', e:'🎀', nom:'Coquette', d:'Acheter un accessoire pour Chèvra'},
-  {id:'theme', e:'🎓', nom:'Reine d\'un thème', d:'3 étoiles aux 3 niveaux d\'un thème'}
+  {id:'theme', e:'🎓', nom:'Reine d\'un thème', d:'3 étoiles aux 3 niveaux d\'un thème'},
+  {id:'av_premier', e:'⛵', nom:'Cap vers l\'aventure', d:'Terminer une première partie d\'aventure', groupe:'aventure'},
+  {id:'av_trio', e:'🧭', nom:'Les trois caps', d:'Jouer les 3 niveaux du mode Aventure', groupe:'aventure'},
+  {id:'av_serie10', e:'🔟', nom:'Série de 10', d:'10 bonnes réponses d\'affilée en aventure', groupe:'aventure'},
+  {id:'av_serie25', e:'🔥', nom:'Série de 25', d:'25 bonnes réponses d\'affilée en aventure', groupe:'aventure'},
+  {id:'av_serie50', e:'🌟', nom:'Série de 50', d:'50 bonnes réponses d\'affilée en aventure', groupe:'aventure', coins:15},
+  {id:'av_serie100', e:'💎', nom:'Série de 100', d:'100 bonnes réponses d\'affilée en aventure', groupe:'aventure', coins:50},
+  {id:'av_difficile10', e:'⚡', nom:'Courage en Difficile', d:'Réussir 10 questions dans une partie en Difficile', groupe:'aventure'},
+  {id:'av_difficile25', e:'🌩️', nom:'Tempête vaincue', d:'Réussir 25 questions dans une partie en Difficile', groupe:'aventure', coins:20},
+  {id:'av_records3', e:'🎏', nom:'Chasseuse de records', d:'Battre 3 fois un record d\'aventure', groupe:'aventure'},
+  {id:'av_records10', e:'🏆', nom:'Reine des records', d:'Battre 10 fois un record d\'aventure', groupe:'aventure', coins:25},
+  {id:'av_sujet', e:'📚', nom:'Experte d\'une île', d:'8 bonnes réponses d\'affilée dans la même matière en aventure', groupe:'aventure'},
+  {id:'av_sixsujets', e:'🌈', nom:'Maîtresse des 6 îles', d:'Une série parfaite dans chacune des 6 matières', groupe:'aventure', coins:30}
+
 ];
 function totalStars(){ return Object.values(S.stars).reduce((a,b)=>a+b,0); }
 function maxStars(){ return SUBJECTS.reduce((a,s)=>a+s.themes.length*9,0); }
 function subjStars(sid){ return SUBJ[sid].themes.reduce((a,t)=>a+[1,2,3].reduce((b,l)=>b+(S.stars[sid+'/'+t.id+'/'+l]||0),0),0); }
 function checkBadges(){
-  const got=[]; const give=id=>{ if(!S.badges[id]){ S.badges[id]=todayStr(); got.push(BADGES.find(b=>b.id===id)); } };
+  const got=[]; const give=id=>{ if(!S.badges[id]){ S.badges[id]=todayStr(); const b=BADGES.find(x=>x.id===id); if(b&&b.coins) S.coins+=b.coins; got.push(b); } };
   if(S.levelsDone>=1) give('premier');
   if(Object.values(S.stars).some(v=>v===3)) give('parfait');
   const ts=totalStars(); if(ts>=30) give('etoiles30'); if(ts>=75) give('etoiles75');
@@ -1918,6 +1923,20 @@ function checkBadges(){
   if(S.chronoBest>=15) give('chrono');
   if(S.owned.some(id=>ACC[id]&&ACC[id].prix)) give('coquette');
   if(SUBJECTS.some(s=>s.themes.some(t=>[1,2,3].every(l=>S.stars[s.id+'/'+t.id+'/'+l]===3)))) give('theme');
+  const A=typeof aventureState==='function'?aventureState(): (S.aventure||{});
+  if((A.runs||0)>=1) give('av_premier');
+  if(A.played&&A.played.facile&&A.played.moyen&&A.played.difficile) give('av_trio');
+  if((A.bestStreak||0)>=10) give('av_serie10');
+  if((A.bestStreak||0)>=25) give('av_serie25');
+  if((A.bestStreak||0)>=50) give('av_serie50');
+  if((A.bestStreak||0)>=100) give('av_serie100');
+  const dOk=(A.records&&A.records.difficile&&A.records.difficile.ok)||0;
+  if(dOk>=10) give('av_difficile10');
+  if(dOk>=25) give('av_difficile25');
+  if((A.recordBeats||0)>=3) give('av_records3');
+  if((A.recordBeats||0)>=10) give('av_records10');
+  if(A.subjects&&Object.keys(A.subjects).length>=1) give('av_sujet');
+  if(A.subjects&&SUBJECTS.every(s=>A.subjects[s.id])) give('av_sixsujets');
   return got;
 }
 function playerLevel(){ let lvl=1, need=100, xp=S.xp; while(xp>=need){ xp-=need; lvl++; need=100+(lvl-1)*50; } return {lvl, xp, need}; }
@@ -1952,6 +1971,7 @@ const NAV = [
   {r:'carte', i:'🗺️', t:'Carte'},
   {r:'defi', i:'☀️', t:'Défi du jour'},
   {r:'revision', i:'🔁', t:'Révision'},
+  {r:'aventure', i:'⛵', t:'Aventure', desk:true},
   {r:'aleatoire', i:'🎲', t:'Défi aléatoire', desk:true},
   {r:'boutique', i:'🛍️', t:'Boutique'},
   {r:'progres', i:'📈', t:'Progrès', l:'Mes progrès'},
@@ -2009,6 +2029,7 @@ function render(){
     case 'jeu': if(!SESSION){ return go('carte'); } html='<section class="screen" id="game"></section>'; break;
     case 'fin': if(!lastResult){ return go('carte'); } html=screenVictory(); break;
     case 'defi': html=screenDaily(); break;
+    case 'aventure': html=screenAventure(); break;
     case 'aleatoire': html=screenRandom(); break;
     case 'revision': html=screenRevision(); break;
     case 'boutique': html=screenShop(a); break;
@@ -2033,21 +2054,21 @@ function screenHome(){
   <div class="card hello">${chevraHost()}<div><h1>Coucou ${esc(S.name)} !</h1><p class="muted" style="margin:0">Choisis une île pour réviser en t'amusant, ou relève le défi du jour.</p></div></div>
   <div class="quick">
     <button class="qbtn daily ${dDone?'done':''}" data-go="defi"><span class="qi" aria-hidden="true">☀️</span><span><b>Défi du jour</b><span class="s">${dDone?'Réussi aujourd\'hui ! Tu peux le rejouer.':'5 questions surprises · +15 pièces'}</span></span></button>
+    <button class="qbtn av" data-go="aventure"><span class="qi" aria-hidden="true">⛵</span><span><b>Mode Aventure</b><span class="s">Des vies, des records, et les îles à l'infini</span></span></button>
     <button class="qbtn rand" data-go="aleatoire"><span class="qi" aria-hidden="true">🎲</span><span><b>Défi aléatoire</b><span class="s">Tes réglages, des questions surprises, à rejouer sans fin</span></span></button>
     <button class="qbtn rev" data-go="revision"><span class="qi" aria-hidden="true">🔁</span><span><b>Révision intelligente</b><span class="s">${due? plural(due,'question')+' à revoir aujourd\'hui':'Rien à revoir pour l\'instant, bravo !'}</span></span></button>
   </div>
   <div class="section-title"><h2>🗺️ Choisis ton île</h2></div>
   <div class="world" role="region" aria-label="Carte du monde des matières">
     <svg class="world-svg" viewBox="0 0 1000 520" preserveAspectRatio="none" aria-hidden="true"><path d="M150 110 C 300 60, 360 80, 500 90 S 700 120, 850 120 M850 120 C 900 250, 600 230, 520 330 S 300 300, 170 360" stroke="#fff" stroke-width="6" stroke-dasharray="4 16" stroke-linecap="round" fill="none" opacity=".8"/><g fill="none" stroke="#fff" stroke-width="4" opacity=".55" stroke-linecap="round"><path d="M60 480 q15 -10 30 0 q15 10 30 0"/><path d="M880 30 q15 -10 30 0 q15 10 30 0"/><path d="M620 480 q15 -10 30 0 q15 10 30 0"/><path d="M330 250 q15 -10 30 0 q15 10 30 0"/></g></svg>
-    <div class="boat" aria-hidden="true">⛵</div>
-    <div class="islands">${SUBJECTS.map(s=>{ const st=subjStars(s.id), mx=s.themes.length*9; return `<button class="island" data-go="ile/${s.id}" aria-label="${esc(s.ile)}, ${esc(s.nom)} : ${st} étoiles sur ${mx}"><span class="blob">${islandBlob(s.couleur)}<span class="ie" aria-hidden="true">${s.emoji}</span></span><span class="il"><b>${esc(s.nom)}</b><small>${esc(s.ile)} · ⭐ ${st}/${mx}</small><span class="progressbar" aria-hidden="true"><i style="width:${Math.round(st/mx*100)}%"></i></span></span></button>`; }).join('')}</div>
+    <div class="islands">${SUBJECTS.map(s=>{ const st=subjStars(s.id), mx=s.themes.length*9; return `<button class="island" data-go="ile/${s.id}" aria-label="${esc(s.ile)}, ${esc(s.nom)} : ${st} étoiles sur ${mx}"><span class="blob">${islandBlob(s.couleur)}<span class="ie" aria-hidden="true">${s.emoji}</span></span><span class="il"><b>${esc(s.ile)}</b><small>${esc(s.nom)} · ⭐ ${st}/${mx}</small><span class="progressbar" aria-hidden="true"><i style="width:${Math.round(st/mx*100)}%"></i></span></span></button>`; }).join('')}</div>
   </div></section>`;
 }
 function screenIsland(sid){
   const s=SUBJ[sid]; if(!s) return screenHome();
-  if(!S.visited[sid]){ S.visited[sid]=true; checkBadges(); save(); }
+  S.lastIle=sid; if(!S.visited[sid]){ S.visited[sid]=true; checkBadges(); } save();
   return `<section class="screen">
-  <div class="island-head" style="background:linear-gradient(135deg,${s.couleur}66,#fff)"><button class="backbtn" data-go="carte" aria-label="Retour à la carte">←</button><span class="big" aria-hidden="true">${s.emoji}</span><div><h1 style="margin:0">${esc(s.ile)}</h1><div class="muted">${esc(s.nom)} · ⭐ ${subjStars(sid)}/${s.themes.length*9}</div></div></div>
+  <div class="island-head" style="background:linear-gradient(135deg,${s.couleur}66,#fff)"><button class="backbtn" data-go="carte" aria-label="Retour à la carte">←</button><span class="big" aria-hidden="true">${s.emoji}</span><div class="ih-titles"><h1>${esc(s.ile)}</h1><div class="muted">${esc(s.nom)} · ⭐ ${subjStars(sid)}/${s.themes.length*9}</div></div></div>
   <p class="muted island-legend">Les niveaux <b>moyen</b> visent la fin du CM2. Les niveaux <b>difficiles</b> préparent la 6e. Le badge <span class="tag6e">6e</span> signale une question du programme officiel de 6e.</p>
   ${sid==='maths'?`<div class="card chrono-card" style="margin-bottom:14px"><span style="font-size:2.4rem" aria-hidden="true">⏱️</span><div style="flex:1"><h3 style="margin:0">Chrono-calcul</h3><div class="muted">60 secondes pour enchaîner un max de calculs ! Record : ${S.chronoBest}</div></div><button class="btn primary" data-chrono>Jouer</button></div>`:''}
   <div class="themes">${s.themes.map(t=>{
@@ -2101,6 +2122,7 @@ function screenShop(cat){
     ${!eq&&repl.length?`<small class="repl">Remplacera : ${repl.map(r=>esc(ACC[r].nom)).join(', ')}</small>`:''}${action}</div>`; }).join('')}</div></section>`;
 }
 function isCalm(){ return S.settings.calm===null ? matchMedia('(prefers-reduced-motion: reduce)').matches : S.settings.calm; }
+function badgeCard(b){ return `<div class="badge ${S.badges[b.id]?'':'locked'}"><div class="bi" aria-hidden="true">${b.e}</div><b>${esc(b.nom)}</b><small>${esc(b.d)}${S.badges[b.id]?' · gagné ✔':''}</small></div>`; }
 function screenMe(){
   const p=playerLevel();
   return `<section class="screen">
@@ -2112,7 +2134,9 @@ function screenMe(){
     <div class="stat"><b>🏅 ${Object.keys(S.badges).length}</b><small>badges sur ${BADGES.length}</small></div>
   </div>
   <div class="section-title"><h2>🏅 Mes badges</h2></div>
-  <div class="grid">${BADGES.map(b=>`<div class="badge ${S.badges[b.id]?'':'locked'}"><div class="bi" aria-hidden="true">${b.e}</div><b>${esc(b.nom)}</b><small>${esc(b.d)}${S.badges[b.id]?' · gagné ✔':''}</small></div>`).join('')}</div>
+  <div class="grid">${BADGES.filter(b=>b.groupe!=='aventure').map(b=>badgeCard(b)).join('')}</div>
+  <div class="section-title"><h2>⛵ Badges d'aventure</h2></div>
+  <div class="grid">${BADGES.filter(b=>b.groupe==='aventure').map(b=>badgeCard(b)).join('')}</div>
   <div class="section-title"><h2>⚙️ Réglages</h2></div>
   <div class="card">
     <div class="toggle"><span id="lbl-sound">Sons doux</span><button class="switch" role="switch" aria-labelledby="lbl-sound" aria-checked="${S.settings.sound}" data-set="sound"></button></div>
@@ -2163,6 +2187,11 @@ function screenProgress(){
   <div class="card" style="margin-top:14px"><h2>Tes points à travailler</h2>${weak.length?`<ul class="weak">${weak.slice(0,5).map(w=>`<li><b>${esc(w.s.nom)} – ${esc(w.t.nom)}</b> : ${Math.round(w.p*100)} % de réussite sur ${w.tot} réponses — un petit tour en révision et ça ira mieux !</li>`).join('')}</ul>`:(Object.keys(S.themeStats).length?'<p class="muted">Bravo ! Tu as plus de 80 % de réussite dans tous les thèmes déjà joués.</p>':'<p class="muted">Joue encore un peu : il faut au moins 3 réponses dans un thème pour le voir ici.</p>')}
   <h3>Les questions qui te donnent du fil à retordre</h3>${missed.length?`<ul class="weak">${missed.map(([id,v])=>`<li>${esc(QBYID[id].question)} <span class="muted">(${esc(SUBJ[QBYID[id].subj].nom)} · ratée ${v.ko} fois, réussie ${v.ok} fois)</span></li>`).join('')}</ul>`:'<p class="muted">Aucune erreur pour l\'instant, bravo !</p>'}
   <p class="muted">Questions à revoir : ${Object.keys(S.srs).length} · Défis du jour réussis : ${S.daily.count} · Ton record au chrono-calcul : ${S.chronoBest}.</p></div>
+  <div class="card" style="margin-top:14px"><h2>⛵ Mode Aventure</h2>
+    <div class="statgrid">${Object.values(AV_DIFF).map(d=>`<div class="stat"><b>${d.emoji} ${esc(avRecordText(d.id).replace('Record : ','').replace('Pas encore de record','–'))}</b><small>${esc(d.nom)}</small></div>`).join('')}</div>
+    <div class="section-title" style="margin-top:12px"><h3>Badges d'aventure</h3></div>
+    <div class="grid">${BADGES.filter(b=>b.groupe==='aventure').map(b=>badgeCard(b)).join('')}</div>
+  </div>
   <div class="card" style="margin-top:14px"><h2>Tes données</h2><p>Tes progrès restent sur cet appareil, dans le navigateur. Rien n'est envoyé sur Internet et tu n'as pas besoin de compte.</p>
   <button class="btn" data-reset>🗑️ Remettre la progression à zéro</button></div></section>`;
 }
@@ -2191,6 +2220,9 @@ document.addEventListener('click', e=>{
   if(t.hasAttribute('data-random-replay')){ sfx('tap'); startRandom(); return; }
   if(t.hasAttribute('data-start-daily')){ sfx('tap'); startDaily(); return; }
   if(t.hasAttribute('data-start-rev')){ sfx('tap'); startRevision(); return; }
+  if(t.hasAttribute('data-av-pick')){ aventureState().pick=t.getAttribute('data-av-pick'); save(); sfx('tap'); const y=window.scrollY; render(); window.scrollTo(0,y); return; }
+  if(t.hasAttribute('data-av-start')){ sfx('tap'); startAventure(aventureState().pick); return; }
+  if(t.hasAttribute('data-av-replay')){ sfx('tap'); startAventure(t.getAttribute('data-av-replay')||aventureState().pick); return; }
   if(t.dataset.buy){ buy(t.dataset.buy); return; }
   if(t.dataset.equip){ equip(t.dataset.equip); return; }
   if(t.dataset.set){ toggleSetting(t.dataset.set); return; }
@@ -2315,6 +2347,204 @@ function finishRandom(s, bonus){
   return {coins, isRecord, prevRecord:prev||null, time, cfg:s.cfg};
 }
 
+/* ---------- 12 bis. Mode Aventure ----------
+   Une partie sans fin (jusqu'à épuisement des vies). 3 niveaux au choix, records séparés.
+   Facile : 3 vies en plus (arrêt à la 4e erreur). Moyen : 1 vie en plus. Difficile : aucune (1re erreur). */
+const AV_DIFF = {
+  facile:    { id:'facile',    nom:'Facile',    emoji:'🌿', hearts:4, extra:3, desc:'3 vies en plus. La partie s\'arrête à la 4e erreur. Les questions commencent tout en douceur.' },
+  moyen:     { id:'moyen',     nom:'Moyen',     emoji:'⛵', hearts:2, extra:1, desc:'1 vie en plus. La partie s\'arrête à la 2e erreur. Les questions démarrent déjà un peu plus haut.' },
+  difficile: { id:'difficile', nom:'Difficile', emoji:'⚡', hearts:1, extra:0, desc:'Aucune vie en plus. La première erreur termine la partie. Les questions sont corsées dès le début.' }
+};
+function aventureState(){
+  if(!S.aventure || typeof S.aventure!=='object') S.aventure={};
+  const A=S.aventure;
+  if(!A.records || typeof A.records!=='object') A.records={};
+  if(!A.played || typeof A.played!=='object') A.played={};
+  if(!A.subjects || typeof A.subjects!=='object') A.subjects={};
+  A.recordBeats=A.recordBeats||0;
+  A.bestStreak=A.bestStreak||0;
+  A.runs=A.runs||0;
+  if(!AV_DIFF[A.pick]) A.pick='facile';
+  return A;
+}
+function avRecordText(diff){
+  const r=aventureState().records[diff];
+  if(!r || !r.ok) return 'Pas encore de record';
+  return 'Record : '+r.ok+' bonne'+(r.ok>1?'s':'')+' réponse'+(r.ok>1?'s':'');
+}
+function screenAventure(){
+  const A=aventureState();
+  const pick=A.pick;
+  return `<section class="screen">
+  <div class="card hello">${chevraHost()}<div><h1>⛵ Mode Aventure</h1><p class="muted" style="margin:0">Traverse les îles aussi loin que tu peux ! Chaque bonne réponse t'emmène plus loin, mais attention à tes cœurs.</p></div></div>
+  <p class="muted" style="margin:14px 0 8px">Choisis un niveau, puis lance-toi. Tes records sont gardés séparément.</p>
+  <div class="av-levels" role="list">${Object.values(AV_DIFF).map(d=>{
+    const on=pick===d.id;
+    return `<button class="av-card ${on?'selected':''}" data-av-pick="${d.id}" aria-pressed="${on}" role="listitem">
+      <span class="av-emoji" aria-hidden="true">${d.emoji}</span>
+      <b>${esc(d.nom)}</b>
+      <span class="av-hearts" aria-label="${d.hearts} cœur${d.hearts>1?'s':''}">${'❤'.repeat(d.hearts)}</span>
+      <small>${esc(d.desc)}</small>
+      <span class="av-rec">${esc(avRecordText(d.id))}</span>
+    </button>`;
+  }).join('')}</div>
+  <button class="btn primary wide" data-av-start style="margin-top:16px">C'est parti ! · ${esc(AV_DIFF[pick].nom)}</button>
+  <p class="muted" style="margin-top:12px">Tu peux aussi rejouer un niveau d'île autant que tu veux : les questions changent à chaque partie.</p>
+  </section>`;
+}
+function avNiveauFor(i, diff){
+  if(diff==='facile'){
+    if(i<6) return 1;
+    if(i<14) return Math.random()<0.7?1:2;
+    if(i<24) return Math.random()<0.55?2:1;
+    const r=Math.random(); return r<0.25?1:r<0.7?2:3;
+  }
+  if(diff==='moyen'){
+    if(i<4) return Math.random()<0.65?2:1;
+    if(i<12) return Math.random()<0.55?2:3;
+    return Math.random()<0.7?3:2;
+  }
+  if(i<3) return Math.random()<0.55?2:3;
+  return Math.random()<0.85?3:2;
+}
+function avBuildQueue(diff, n){
+  n=n||80;
+  const used=new Set(), out=[];
+  const byNiv={1:[],2:[],3:[]};
+  ALLQ.forEach(q=>byNiv[q.niveau]&&byNiv[q.niveau].push(q));
+  byNiv[1]=shuffle(byNiv[1]); byNiv[2]=shuffle(byNiv[2]); byNiv[3]=shuffle(byNiv[3]);
+  const ptr={1:0,2:0,3:0};
+  const take=niv=>{
+    const bag=byNiv[niv]; if(!bag||!bag.length) return null;
+    for(let k=0;k<bag.length;k++){
+      const q=bag[(ptr[niv]+k)%bag.length];
+      if(!used.has(q.id)){ ptr[niv]=(ptr[niv]+k+1)%bag.length; return q; }
+    }
+    return bag[ptr[niv]++%bag.length];
+  };
+  for(let i=0;i<n;i++){
+    let niv=avNiveauFor(i, diff), q=take(niv);
+    if(!q){ for(const alt of [niv===1?2:niv-1, 2, 1, 3]){ q=take(alt); if(q) break; } }
+    if(!q) break;
+    used.add(q.id); out.push(q);
+  }
+  return out;
+}
+function startAventure(diff){
+  const d=AV_DIFF[diff]||AV_DIFF.facile;
+  const A=aventureState(); A.pick=d.id; save();
+  const qs=avBuildQueue(d.id);
+  if(!qs.length) return go('aventure');
+  newSession('aventure', qs, { title:'⛵ Aventure · '+d.nom, avDiff:d.id, lives:d.hearts, livesMax:d.hearts, streak:0, bestStreak:0, subjStreak:0, subjCur:null, mistakes:0 });
+}
+function avHeartsHTML(s){
+  if(!s || s.kind!=='aventure') return '';
+  const max=s.livesMax||1, n=Math.max(0,s.lives|0);
+  return `<span class="hearts" aria-label="${n} cœur${n>1?'s':''} sur ${max}">${Array.from({length:max},(_,i)=>`<span class="h ${i<n?'':'off'}" aria-hidden="true">❤</span>`).join('')}</span>`;
+}
+function avOnAnswer(ok){
+  const s=SESSION; if(!s || s.kind!=='aventure') return [];
+  const A=aventureState();
+  if(ok){
+    s.streak=(s.streak||0)+1;
+    s.bestStreak=Math.max(s.bestStreak||0, s.streak);
+    A.bestStreak=Math.max(A.bestStreak||0, s.streak);
+    const subj=s.questions[s.idx].subj;
+    if(s.subjCur===subj) s.subjStreak=(s.subjStreak||0)+1; else { s.subjCur=subj; s.subjStreak=1; }
+    if(s.subjStreak>=8) A.subjects[subj]=true;
+  } else {
+    s.lives=Math.max(0,(s.lives||1)-1);
+    s.mistakes=(s.mistakes||0)+1;
+    s.streak=0; s.subjStreak=0; s.subjCur=null;
+  }
+  const before=Object.keys(S.badges).length;
+  const nb=checkBadges(); const ni=checkRewards();
+  if(nb.length||ni.length){
+    const bits=[];
+    nb.forEach(b=>bits.push(b.e+' '+b.nom+(b.coins?' · +'+b.coins+' 🪙':'')));
+    ni.forEach(it=>bits.push('👗 '+it.nom));
+    toast(bits.join(' · ')+' !');
+    say('Youhou, un nouveau badge !','celebrate');
+    sfx('win');
+  }
+  save();
+  return {nb, ni, before};
+}
+function finishAventure(s, bonus){
+  const A=aventureState();
+  A.runs=(A.runs||0)+1;
+  A.played[s.avDiff]=true;
+  A.bestStreak=Math.max(A.bestStreak||0, s.bestStreak||0);
+  const prev=A.records[s.avDiff]||null;
+  let isRecord=false;
+  if(!prev || s.ok>(prev.ok||0) || (s.ok===(prev.ok||0) && s.ok>0 && s.points>(prev.points||0))){
+    if(prev && s.ok>(prev.ok||0)){ A.recordBeats=(A.recordBeats||0)+1; isRecord=true; bonus.push('Nouveau record en '+AV_DIFF[s.avDiff].nom+' !'); }
+    else if(!prev && s.ok>0){ isRecord=true; bonus.push('Premier record en '+AV_DIFF[s.avDiff].nom+' !'); }
+    A.records[s.avDiff]={ ok:s.ok, n:s.questions ? Math.min(s.idx+1, s.questions.length) : s.results.length, points:s.points, date:todayStr() };
+  }
+  let coins=s.ok*2;
+  if(isRecord && s.ok>=5){ coins+=10; bonus.push('Record : +10 pièces'); }
+  return { coins, isRecord, prev, diff:s.avDiff };
+}
+
+/* ---------- Tirage aléatoire des niveaux d'île ----------
+   On joue autant de questions que le niveau en contient, tirées dans un vivier plus large
+   (même thème + difficultés voisines + thèmes voisins) pour que chaque partie soit différente. */
+function levelRunSize(sid, tid, lvl){
+  const t=SUBJ[sid].themes.find(x=>x.id===tid);
+  return t?t.questions.filter(q=>q.niveau===lvl).length:0;
+}
+function levelPool(sid, tid, lvl){
+  const themes=SUBJ[sid].themes;
+  const ti=themes.findIndex(x=>x.id===tid);
+  const t=themes[ti];
+  const n=t.questions.filter(q=>q.niveau===lvl).length;
+  const need=Math.max(n*3, n);
+  const byId=new Map();
+  const add=qs=>qs.forEach(q=>{ if(!byId.has(q.id)) byId.set(q.id,q); });
+  add(t.questions.filter(q=>q.niveau===lvl));
+  if(byId.size<need && lvl>1) add(t.questions.filter(q=>q.niveau===lvl-1));
+  if(byId.size<need && lvl<3) add(t.questions.filter(q=>q.niveau===lvl+1));
+  [ti-1,ti+1,ti-2,ti+2].forEach(i=>{
+    if(i>=0 && i<themes.length && byId.size<need) add(themes[i].questions.filter(q=>q.niveau===lvl));
+  });
+  [ti-1,ti+1,ti-2,ti+2].forEach(i=>{
+    if(i>=0 && i<themes.length && byId.size<need) add(themes[i].questions.filter(q=>Math.abs(q.niveau-lvl)===1));
+  });
+  if(byId.size<need) themes.forEach(th=>add(th.questions.filter(q=>Math.abs(q.niveau-lvl)<=1)));
+  return { pool:[...byId.values()], n, need };
+}
+function pickLevelQuestions(sid, tid, lvl){
+  const {pool, n}=levelPool(sid, tid, lvl);
+  if(!n) return [];
+  const key=sid+'/'+tid+'/'+lvl;
+  const hist=(S.levelHist && S.levelHist[key])||[];
+  const recent=new Set(hist.flat());
+  let fresh=pool.filter(q=>!recent.has(q.id));
+  if(fresh.length<n) fresh=pool.slice();
+  const missed=fresh.filter(q=>{ const st=S.qstats[q.id]; return st && st.ko>st.ok; });
+  const picked=[], used=new Set();
+  if(missed.length && Math.random()<0.35){ picked.push(missed[0]); used.add(missed[0].id); }
+  for(const q of shuffle(fresh)){
+    if(picked.length>=n) break;
+    if(!used.has(q.id)){ picked.push(q); used.add(q.id); }
+  }
+  if(picked.length<n){
+    for(const q of shuffle(pool)){
+      if(picked.length>=n) break;
+      if(!used.has(q.id)){ picked.push(q); used.add(q.id); }
+    }
+  }
+  return shuffle(picked).slice(0,n);
+}
+function rememberLevelPlay(sid, tid, lvl, ids){
+  const key=sid+'/'+tid+'/'+lvl;
+  S.levelHist=S.levelHist||{};
+  const h=(S.levelHist[key]||[]).slice();
+  h.push(ids);
+  S.levelHist[key]=h.slice(-2);
+}
+
 
 /* ---------- 13. Démarrage des parties ---------- */
 function newSession(kind, questions, meta){
@@ -2323,7 +2553,7 @@ function newSession(kind, questions, meta){
 }
 function startLevel(sid, tid, lvl){
   const t=SUBJ[sid].themes.find(x=>x.id===tid);
-  const qs=shuffle(t.questions.filter(q=>q.niveau===lvl));
+  const qs=pickLevelQuestions(sid, tid, lvl);
   newSession('level', qs, {sid, tid, lvl, title: SUBJ[sid].emoji+' '+t.nom+' · '+LEVEL_NAMES[lvl-1]});
 }
 function startDaily(){ newSession('daily', dailyQuestions(), {title:'☀️ Défi du jour'}); }
@@ -2335,7 +2565,7 @@ const TYPE_LABEL = {qcm:'🔘 QCM', vraifaux:'✅ Vrai ou faux', trou:'🧩 Text
 function dotsHTML(){ const s=SESSION; return `<div class="dots" role="img" aria-label="Question ${s.idx+1} sur ${s.questions.length}">${s.questions.map((q,i)=>`<span class="dot ${i<s.results.length?(s.results[i]?'ok':'ko'):(i===s.idx?'cur':'')}"></span>`).join('')}</div>`; }
 function gameHead(){
   const s=SESSION;
-  return `<div class="game-head"><button class="backbtn" data-quit aria-label="Faire une pause et quitter">✕</button><div class="gt">${esc(s.title)}</div>${s.kind==='random'&&s.cfg.chrono?`<span class="pill" id="gtime" aria-label="Temps écoulé">⏱️ ${fmtClock(Date.now()-s.start)}</span>`:''}<span class="pill" id="gpts" aria-label="${s.points} points">✨ ${s.points}</span></div>${s.kind==='chrono'?'':dotsHTML()}
+  return `<div class="game-head"><button class="backbtn" data-quit aria-label="Faire une pause et quitter">✕</button><div class="gt">${esc(s.title)}</div>${s.kind==='aventure'?avHeartsHTML(s):''}${s.kind==='aventure'?`<span class="pill" id="gstreak" aria-label="Série de ${s.streak||0}">🔥 ${s.streak||0}</span>`:''}${s.kind==='random'&&s.cfg.chrono?`<span class="pill" id="gtime" aria-label="Temps écoulé">⏱️ ${fmtClock(Date.now()-s.start)}</span>`:''}<span class="pill" id="gpts" aria-label="${s.points} points">✨ ${s.points}</span></div>${s.kind==='chrono'||s.kind==='aventure'?'':dotsHTML()}
   <div class="game-chevra">${chevraHost()}<div class="bubble" data-say aria-live="polite"></div></div>`;
 }
 function showQuestion(){
@@ -2355,7 +2585,7 @@ function showQuestion(){
 }
 function quitGame(){
   modal(`<h2>Une petite pause ?</h2><p>Ta progression sur cette partie ne sera pas gardée, mais ce n'est pas grave : tu pourras recommencer quand tu veux !</p><div class="row" style="justify-content:center"><button class="btn" data-close>Continuer à jouer</button><button class="btn primary" data-yes>Quitter</button></div>`,
-    m=>{ m.querySelector('[data-yes]').onclick=()=>{ closeModal(); const back = SESSION&&SESSION.kind==='level'? 'ile/'+SESSION.sid : (SESSION&&SESSION.kind==='chrono'?'ile/maths':(SESSION&&SESSION.kind==='random'?'aleatoire':'carte')); if(SESSION&&SESSION.timer) clearInterval(SESSION.timer); if(SESSION&&SESSION.clock) clearInterval(SESSION.clock); SESSION=null; go(back); }; });
+    m=>{ m.querySelector('[data-yes]').onclick=()=>{ closeModal(); const back = SESSION&&SESSION.kind==='level'? 'ile/'+SESSION.sid : (SESSION&&SESSION.kind==='chrono'?'ile/maths':(SESSION&&SESSION.kind==='random'?'aleatoire':(SESSION&&SESSION.kind==='aventure'?'aventure':'carte'))); if(SESSION&&SESSION.timer) clearInterval(SESSION.timer); if(SESSION&&SESSION.clock) clearInterval(SESSION.clock); SESSION=null; go(back); }; });
 }
 function qText(q){ return `<p class="qtext" id="qtext">${esc(q.question)}</p>`; }
 
@@ -2664,13 +2894,17 @@ function answer(ok, detail, score){
   record(q, ok, s.kind==='revision');
   sfx(ok?'good':'bad');
   say(ok? phrase('good') : phrase('bad'), ok?'happy':'sad');
-  const last = s.idx>=s.questions.length-1;
-  $('#fb').innerHTML = `<div class="feedback ${ok?'good':'bad'}" role="status"><div class="ft">${ok?'🎉 Bravo !':'💛 Pas grave !'} ${pts?`<span class="muted" style="font-size:.95rem">+${pts} points</span>`:''}</div>${detail?`<div>${detail}</div>`:''}<div class="expl">💡 ${esc(q.explication)}</div><button class="btn primary wide" id="next">${last?'Voir mes résultats ⭐':'Question suivante →'}</button></div>`;
+  if(s.kind==='aventure') avOnAnswer(ok);
+  const last = s.kind==='aventure' ? (s.lives<=0 || s.idx>=s.questions.length-1) : s.idx>=s.questions.length-1;
+  const nextLbl = last?'Voir mes résultats ⭐':(s.kind==='aventure'&&!ok&&s.lives>0?'Continuer →':'Question suivante →');
+  $('#fb').innerHTML = `<div class="feedback ${ok?'good':'bad'}" role="status"><div class="ft">${ok?'🎉 Bravo !':(s.kind==='aventure'&&s.lives<=0?'💛 C\'est terminé !':'💛 Pas grave !')} ${pts?`<span class="muted" style="font-size:.95rem">+${pts} points</span>`:''}</div>${detail?`<div>${detail}</div>`:''}${s.kind==='aventure'&&!ok?`<div class="muted">${s.lives>0? (s.lives+' cœur'+(s.lives>1?'s':'')+' restant'+(s.lives>1?'s':'')):'Plus de vies, bravo pour ce parcours !'}</div>`:''}<div class="expl">💡 ${esc(q.explication)}</div><button class="btn primary wide" id="next">${nextLbl}</button></div>`;
   document.body.classList.add('has-feedback');
   const nb=$('#next'); nb.onclick=next; nb.focus({preventScroll:true});
   if(window.innerWidth>=768) $('#fb').scrollIntoView({behavior: isCalm()?'auto':'smooth', block:'nearest'});
   const d=$('.dots'); if(d) d.outerHTML=dotsHTML();
   const gp=$('#gpts'); if(gp){ gp.textContent='✨ '+s.points; gp.setAttribute('aria-label', s.points+' points'); }
+  const gs=$('#gstreak'); if(gs){ gs.textContent='🔥 '+(s.streak||0); gs.setAttribute('aria-label','Série de '+(s.streak||0)); }
+  const hh=$('.game-head .hearts'); if(hh) hh.outerHTML=avHeartsHTML(s);
 }
 function record(q, ok, inRevision){
   const el=Math.min(120,(Date.now()-SESSION.qStart)/1000);
@@ -2681,43 +2915,55 @@ function record(q, ok, inRevision){
   if(!ok) srsMiss(q, inRevision); else if(inRevision) srsHit(q);
   save();
 }
-function next(){ sfx('tap'); const s=SESSION; if(!s) return; if(s.idx<s.questions.length-1){ s.idx++; showQuestion(); window.scrollTo(0,0); } else finish(); }
+function next(){ sfx('tap'); const s=SESSION; if(!s) return;
+  if(s.kind==='aventure' && s.lives<=0){ finish(); return; }
+  if(s.idx<s.questions.length-1){ s.idx++; showQuestion(); window.scrollTo(0,0); return; }
+  if(s.kind==='aventure' && s.lives>0){ s.questions=s.questions.concat(avBuildQueue(s.avDiff, 40)); s.idx++; showQuestion(); window.scrollTo(0,0); return; }
+  finish();
+}
 function starsFor(r){ return r>=.9?3 : r>=.65?2 : r>=.35?1 : 0; }
 function finish(){
   const s=SESSION; const n=s.questions.length; const ratio = n? s.ok/n : 0;
   let stars=starsFor(ratio), coins=0; const bonus=[];
   touchStreak();
+  let av=null;
   if(s.kind==='level'){
     const k=s.sid+'/'+s.tid+'/'+s.lvl; const prev=S.stars[k]||0;
     if(stars>prev){ S.stars[k]=stars; coins+=(stars-prev)*5; bonus.push('Nouvelles étoiles : +'+((stars-prev)*5)+' pièces'); if(stars===3){ coins+=10; bonus.push('Niveau parfait : +10 pièces'); } }
     S.levelsDone++;
+    rememberLevelPlay(s.sid, s.tid, s.lvl, s.questions.map(q=>q.id));
+  } else if(s.kind==='aventure'){
+    av=finishAventure(s, bonus); coins=av.coins;
   } else if(s.kind==='daily'){
     if(!(S.daily.date===todayStr()&&S.daily.done)){ S.daily={date:todayStr(), done:true, count:(S.daily.count||0)+1}; coins+=15; bonus.push('Défi du jour : +15 pièces'); }
   } else if(s.kind==='revision'){ S.revisions++; coins+=5; bonus.push('Révision terminée : +5 pièces'); }
   let rnd=null;
   if(s.kind==='random'){ if(s.clock) clearInterval(s.clock); rnd=finishRandom(s, bonus); coins=rnd.coins; }
-  else coins += s.ok*2;
+  else if(s.kind!=='aventure') coins += s.ok*2;
   S.coins+=coins; S.xp+=s.points+s.ok*5;
   const nb=checkBadges(); const ni=checkRewards(); save();
-  lastResult={items:ni, kind:s.kind, stars, ok:s.ok, n, coins, points:s.points, badges:nb, bonus, title:s.title, sid:s.sid, tid:s.tid, lvl:s.lvl, rnd};
+  const nFaced = s.kind==='aventure' ? s.results.length : n;
+  lastResult={items:ni, kind:s.kind, stars, ok:s.ok, n:nFaced, coins, points:s.points, badges:nb, bonus, title:s.title, sid:s.sid, tid:s.tid, lvl:s.lvl, rnd, av, avDiff:s.avDiff, lives:s.lives};
   SESSION=null; go('fin');
 }
 function screenVictory(){
-  const r=lastResult; const great = r.kind==='chrono' ? r.ok>=8 : (r.stars>=2 || (r.kind==='random'&&r.rnd.isRecord));
+  const r=lastResult; const great = r.kind==='chrono' ? r.ok>=8 : r.kind==='aventure' ? (r.ok>=8 || (r.av&&r.av.isRecord)) : (r.stars>=2 || (r.kind==='random'&&r.rnd.isRecord));
   let btns='';
   if(r.kind==='level'){
     if(r.lvl<3 && r.stars>=1) btns=`<button class="btn primary" data-play="${r.sid}/${r.tid}/${r.lvl+1}">Niveau suivant →</button>`;
     btns+=`<button class="btn ${btns?'':'primary'}" data-play="${r.sid}/${r.tid}/${r.lvl}">↻ Rejouer</button><button class="btn" data-go="ile/${r.sid}">Retour à l'île</button>`;
   } else if(r.kind==='chrono') btns=`<button class="btn primary" data-chrono>↻ Rejouer</button><button class="btn" data-go="ile/maths">Retour à l'île</button>`;
   else if(r.kind==='random') btns=`<button class="btn primary big" data-random-replay>↻ Rejouer</button><button class="btn big" data-go="aleatoire">⚙️ Changer les réglages</button>`;
+  else if(r.kind==='aventure') btns=`<button class="btn primary" data-av-replay="${r.avDiff||''}">↻ Rejouer en ${esc((AV_DIFF[r.avDiff]||{}).nom||'Aventure')}</button><button class="btn" data-go="aventure">Changer de niveau</button>`;
   else if(r.kind==='revision') btns = srsDue().length? `<button class="btn primary" data-start-rev>Continuer la révision</button><button class="btn" data-go="carte">Carte</button>` : `<button class="btn primary" data-go="carte">Retour à la carte</button>`;
   else btns=`<button class="btn primary" data-go="carte">Retour à la carte</button><button class="btn" data-start-daily>↻ Rejouer</button>`;
-  const title = r.kind==='random'&&r.rnd.isRecord ? (r.rnd.prevRecord?'🏆 Nouveau record !':'🏆 Premier record !') : r.kind==='chrono' ? (r.record ? 'Nouveau record !' : 'Bien joué !') : (r.stars===3?'Parfait, bravo !': r.stars===2?'Super travail !': r.stars===1?'Bien joué !':'Bel effort !');
+  const title = r.kind==='aventure'&&r.av&&r.av.isRecord ? '🏆 Nouveau record !' : r.kind==='random'&&r.rnd.isRecord ? (r.rnd.prevRecord?'🏆 Nouveau record !':'🏆 Premier record !') : r.kind==='chrono' ? (r.record ? 'Nouveau record !' : 'Bien joué !') : r.kind==='aventure' ? (r.ok>=15?'Quel voyage !': r.ok>=8?'Super aventure !':'Bel effort !') : (r.stars===3?'Parfait, bravo !': r.stars===2?'Super travail !': r.stars===1?'Bien joué !':'Bel effort !');
   const due=srsDue().length;
   return `<section class="screen victory"><div class="card">
     ${chevraHost()}
     <h1>${title}</h1><p class="muted" style="margin:0">${esc(r.title)}</p>
     ${r.kind==='chrono' ? `<div class="bigstars" aria-hidden="true"><span class="on">⚡</span></div><p style="font-size:1.3rem;font-weight:800">${plural(r.ok,'calcul réussi','calculs réussis')} en 60 secondes</p><p class="muted">Ton record : ${S.chronoBest}</p>`
+      : r.kind==='aventure' ? `<div class="bigstars" aria-hidden="true"><span class="on">⛵</span></div><p style="font-size:1.2rem;font-weight:800">${plural(r.ok,'bonne réponse','bonnes réponses')} · ${r.n} question${r.n>1?'s':''} jouée${r.n>1?'s':''}</p><p class="muted">${esc(avRecordText(r.avDiff||'facile'))}</p>`
       : `<div class="bigstars" role="img" aria-label="${r.stars} étoile${r.stars>1?'s':''} sur 3">${[1,2,3].map(i=>`<span class="${i<=r.stars?'on':''}">⭐</span>`).join('')}</div><p style="font-size:1.2rem;font-weight:800">${r.ok} bonne${r.ok>1?'s':''} réponse${r.ok>1?'s':''} sur ${r.n}</p>`}
     ${r.kind==='random'?`<p class="muted" style="margin:0">${r.rnd.cfg.chrono?'⏱️ Temps : '+fmtClock(r.rnd.time)+' · ':''}${r.rnd.isRecord&&r.rnd.prevRecord?'Ancien record : '+esc(recordText(r.rnd.prevRecord,r.rnd.cfg.chrono).replace(/^Record : /,'')):esc(recordText(S.random.records[randKey(r.rnd.cfg)],r.rnd.cfg.chrono))}</p>`:''}
     <div class="rewards"><span class="reward">🪙 +${r.coins} pièces</span><span class="reward">✨ +${r.points} points</span><span class="reward">🔥 ${plural(currentStreak(),'jour')}</span></div>
@@ -2730,7 +2976,7 @@ function screenVictory(){
     <div class="row" style="justify-content:center;margin-top:10px">${btns}</div></div></section>`;
 }
 function afterVictory(){
-  const r=lastResult; const great = r.kind==='chrono' ? r.ok>=8 : (r.stars>=2 || (r.kind==='random'&&r.rnd.isRecord));
+  const r=lastResult; const great = r.kind==='chrono' ? r.ok>=8 : r.kind==='aventure' ? (r.ok>=8 || (r.av&&r.av.isRecord)) : (r.stars>=2 || (r.kind==='random'&&r.rnd.isRecord));
   say(great? 'Youpiii ! '+phrase('win') : phrase('soso'), great?'celebrate':'encourage', great);
   if(great){ sfx('win'); confetti(); } else sfx('coin');
   const b=$('#main .victory .row .btn'); b&&b.focus({preventScroll:true});
@@ -2793,7 +3039,7 @@ if (typeof location !== 'undefined' && /^https?:$/.test(location.protocol) && 's
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 // Accès en lecture pour les tests automatiques
-window.__chevra = { get state(){ return S; }, ALLQ, SUBJECTS, checkDictee, srsDue, dailyQuestions, get session(){ return SESSION; }, get music(){ return {on:MUSIC.on, duck:MUSIC.duck, ctx: actx?actx.state:null, gain: MUSIC.gain?MUSIC.gain.gain.value:0, style:'lofi', bleats:MUSIC.bleats, nextBleatIn: MUSIC.bleatAt?Math.max(0,(MUSIC.bleatAt-Date.now())/1000):null}; }, musicDuck, musicBleatNow, get musicOut(){ return MUSIC.comp; }, chevraHost, dressChevra, ACCESSOIRES, accOverlap, randPick, randKey };
+window.__chevra = { get state(){ return S; }, ALLQ, SUBJECTS, checkDictee, srsDue, dailyQuestions, get session(){ return SESSION; }, get music(){ return {on:MUSIC.on, duck:MUSIC.duck, ctx: actx?actx.state:null, gain: MUSIC.gain?MUSIC.gain.gain.value:0, style:'lofi', bleats:MUSIC.bleats, nextBleatIn: MUSIC.bleatAt?Math.max(0,(MUSIC.bleatAt-Date.now())/1000):null}; }, musicDuck, musicBleatNow, get musicOut(){ return MUSIC.comp; }, chevraHost, dressChevra, ACCESSOIRES, accOverlap, randPick, randKey, levelPool, pickLevelQuestions, aventureState, AV_DIFF, startAventure, checkBadges, checkRewards, BADGES, showQuestion };
 })();
 
 </script>
