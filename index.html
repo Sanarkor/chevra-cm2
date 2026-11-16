@@ -463,7 +463,7 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
 .wardrobe-top{display:flex; gap:14px; align-items:center}
 .wardrobe-top .chevra-host{width:140px; flex:none}
 .wt-info{flex:1; min-width:0}
-.chipbtn.worn{border-color:var(--mint,#7fd6b0); background:var(--mint-l,#e3f8ef); font-size:.9rem; min-height:44px}
+.chipbtn.worn{border-color:var(--mint,#7fd6b0); background:var(--mint-l,#e3f8ef); font-size:.9rem; min-height:48px}
 .tabs{display:flex; gap:8px; overflow-x:auto; padding:12px 2px 8px; margin:6px 0 4px; scrollbar-width:thin; -webkit-overflow-scrolling:touch}
 .tab{flex:none; min-height:48px; padding:8px 14px; border-radius:999px; border:3px solid var(--line); background:#fff; font-weight:800; color:var(--ink); white-space:nowrap}
 .tab[aria-selected="true"]{border-color:var(--primary); background:var(--pink-l); color:var(--primary)}
@@ -472,10 +472,69 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
 .items .item.locked .prev{filter:grayscale(.15) opacity(.8)}
 .items .item .lock{font-size:.88rem; font-weight:700; color:var(--muted); margin:6px 0 0}
 .newitem .btn{min-height:40px; margin-left:6px}
+
+.tab-short{display:none}
+
+/* Téléphone et tablette : grille verticale, onglets tous visibles, aperçu collé en haut */
+@media (max-width:1023.98px){
+  .shop .wardrobe-top{
+    position:sticky; z-index:25;
+    background:#fff; box-shadow:var(--shadow);
+  }
+  .shop .tabs{
+    display:grid; grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:6px; overflow:visible; padding:6px 0 8px; margin:6px 0 4px;
+  }
+  .shop .tab{
+    flex:none; width:100%; min-width:0; min-height:48px;
+    padding:4px 4px; border-radius:16px; white-space:normal;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:0; font-size:.75rem; line-height:1.1; text-align:center;
+  }
+  .shop .tab > span[aria-hidden="true"]:first-child{font-size:1.15rem; line-height:1}
+  .shop .tab-full{display:none}
+  .shop .tab-short{display:block}
+  .shop .items{grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px}
+  .shop .item{padding:8px 6px; min-width:0; overflow:hidden}
+  .shop .item .prev{max-width:none}
+  .shop .item b{font-size:.82rem; line-height:1.2}
+  .shop .item small{font-size:.72rem}
+  .shop .item .btn, .shop .item .lock{
+    width:100%; min-height:48px; padding:8px 4px; font-size:.78rem;
+    text-align:center; white-space:normal; height:auto; flex-wrap:wrap;
+  }
+  .shop .item .price{font-size:.85rem}
+}
+
+@media (max-width:767.98px){
+  .shop .section-title{margin:6px 0 8px}
+  .shop .section-title h1{font-size:1.25rem}
+  .shop .wardrobe-top{
+    top:calc(66px + var(--safe-t));
+    display:grid; grid-template-columns:80px minmax(0,1fr);
+    align-items:center; column-gap:8px; row-gap:4px;
+    padding:6px 8px; margin:0 0 4px; border-radius:18px;
+  }
+  .shop .wardrobe-top .chevra-host{width:80px; grid-column:1; grid-row:1}
+  .shop .wt-info{display:contents}
+  .shop .wt-info > p{margin:0; font-size:.88rem; grid-column:2; grid-row:1; min-width:0}
+  .shop .wt-info > p.muted{display:none}
+  .shop .wt-info .chips{grid-column:1 / -1; grid-row:2; justify-content:flex-start; margin:0}
+  .shop .chipbtn.worn{min-height:48px; padding:6px 10px; font-size:.8rem}
+}
+
 @media (min-width:768px){ .wardrobe-top .chevra-host{width:170px} }
-@media (min-width:1024px){ .shop .wardrobe-top .chevra-host{display:none} }
-@media (max-width:599.98px){ .wardrobe-top{flex-wrap:wrap; justify-content:center; text-align:center} .wardrobe-top .chevra-host{width:130px} .wt-info{flex:1 1 100%} .wt-info .chips{justify-content:center} }
-@media (min-width:1024px){ .tabs{flex-wrap:wrap; overflow:visible} }
+@media (min-width:768px) and (max-width:1023.98px){
+  .shop .wardrobe-top{top:144px; padding:10px 14px; display:flex; gap:12px; align-items:center}
+  .shop .wardrobe-top .chevra-host{width:110px}
+  .shop .wt-info > p.muted{display:none}
+  .shop .tab{font-size:.82rem; padding:6px 8px}
+}
+
+@media (min-width:1024px){
+  .shop .wardrobe-top .chevra-host{display:none}
+  .tabs{flex-wrap:wrap; overflow:visible}
+}
 
 </style>
 </head>
@@ -1168,55 +1227,135 @@ const SFX = {
 function sfx(name){ if(S.settings.sound) try{ SFX[name](); }catch(e){} }
 
 
-/* ---------- 4 bis. Musique de fond douce (style K-pop chill, 100 % Web Audio, aucun fichier) ----------
+/* ---------- 4 bis. Musique de fond lo-fi (100 % Web Audio, aucun fichier, composition originale)
+   Groove posé, un peu décalé, poussiéreux — inspiré de l'esprit ludique et farfelu
+   d'un simulateur de chèvre, SANS copier un morceau ni une mélodie existants.
    Désactivée par défaut. Bouton 🎵 à côté du bouton son ; indépendante des bruitages.
-   Boucle de 8 mesures : Fa maj7 – Sol6 – Mi m7 – La m7 (deux fois, mélodie variée), 88 BPM. */
-const MUSIC = { on:false, gain:null, comp:null, delay:null, noise:null, timer:null, step:0, next:0, duck:false };
-const M_BPM = 88, M_EIGHTH = 60/M_BPM/2, M_VOL = 0.11, M_DUCK = 0.035;
-const M_CHORDS = [ {n:[53,57,60,64], b:41}, {n:[55,59,62,64], b:43}, {n:[52,55,59,62], b:40}, {n:[57,60,64,67], b:45} ];
+   78 BPM, swing léger, 8 mesures : Fa6 – Mib maj7 – Sib maj7 – Do7sus.
+   De temps en temps (20 à 45 s), un petit « bêêêê » synthétique, court et discret. */
+const MUSIC = { on:false, gain:null, comp:null, delay:null, noise:null, vinyl:null, crackle:null, timer:null, bleatTimer:null, bleatAt:0, bleats:0, step:0, next:0, duck:false };
+const M_BPM = 78, M_EIGHTH = 60/M_BPM/2, M_SWING = .18, M_VOL = 0.11, M_DUCK = 0.035;
+const M_CHORDS = [
+  {n:[53,57,60,62], b:41}, /* Fa6      */
+  {n:[51,55,58,62], b:39}, /* Mib maj7 */
+  {n:[46,50,53,57], b:46}, /* Sib maj7 */
+  {n:[48,53,55,58], b:48}  /* Do7sus   */
+];
+const M_BASS = [
+  [41,0,0,41,0,0,43,0],
+  [39,0,0,39,0,41,39,0],
+  [46,0,0,46,0,0,43,46],
+  [48,0,46,43,48,0,0,41]
+];
 const M_MELODY = [
-  [76,0,79,0,81,79,76,0], [74,0,76,0,79,0,74,0], [76,0,74,72,74,0,0,0], [72,0,76,0,74,0,72,0],
-  [81,0,79,76,79,0,81,0], [79,0,76,0,74,76,0,0], [76,0,79,0,76,74,72,0], [74,0,72,0,0,0,0,0]
+  [69,0,72,0,74,72,0,0],
+  [70,0,0,67,0,0,0,0],
+  [70,0,69,0,65,0,0,0],
+  [67,0,0,0,64,0,65,0],
+  [72,0,74,72,69,0,0,0],
+  [70,67,0,0,0,0,0,0],
+  [69,0,65,0,67,0,0,0],
+  [64,0,0,0,0,0,62,0]
 ];
 function mHz(m){ return 440*Math.pow(2,(m-69)/12); }
+function mStepLen(step){ return step%2===0 ? M_EIGHTH*(1-M_SWING) : M_EIGHTH*(1+M_SWING); }
 function musicGraph(a){
   if(MUSIC.gain) return;
   MUSIC.gain=a.createGain(); MUSIC.gain.gain.value=0.0001;
   MUSIC.comp=a.createDynamicsCompressor(); MUSIC.comp.threshold.value=-24; MUSIC.comp.ratio.value=3;
   MUSIC.gain.connect(MUSIC.comp).connect(a.destination);
-  // écho léger pour la mélodie
-  MUSIC.delay=a.createDelay(1); MUSIC.delay.delayTime.value=M_EIGHTH*3; const fb=a.createGain(); fb.gain.value=.28; const wet=a.createGain(); wet.gain.value=.35;
+  MUSIC.delay=a.createDelay(1); MUSIC.delay.delayTime.value=M_EIGHTH*3; const fb=a.createGain(); fb.gain.value=.22; const wet=a.createGain(); wet.gain.value=.28;
   MUSIC.delay.connect(fb).connect(MUSIC.delay); MUSIC.delay.connect(wet).connect(MUSIC.gain);
-  const len=Math.floor(a.sampleRate*.3), buf=a.createBuffer(1,len,a.sampleRate), d=buf.getChannelData(0);
-  for(let i=0;i<len;i++) d[i]=Math.random()*2-1; MUSIC.noise=buf;
+  const nlen=Math.floor(a.sampleRate*.3), nbuf=a.createBuffer(1,nlen,a.sampleRate), nd=nbuf.getChannelData(0);
+  for(let i=0;i<nlen;i++) nd[i]=Math.random()*2-1; MUSIC.noise=nbuf;
+  const vlen=Math.floor(a.sampleRate*2), vbuf=a.createBuffer(1,vlen,a.sampleRate), vd=vbuf.getChannelData(0);
+  for(let i=0;i<vlen;i++){ vd[i]=(Math.random()*2-1)*0.035; if(Math.random()<0.0015) vd[i]+=(Math.random()*2-1)*0.45; }
+  MUSIC.vinyl=vbuf;
+}
+function mCrackle(a){
+  if(MUSIC.crackle){ try{ MUSIC.crackle.stop(); }catch(e){} MUSIC.crackle=null; }
+  const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain();
+  s.buffer=MUSIC.vinyl; s.loop=true; f.type='bandpass'; f.frequency.value=1800; f.Q.value=.6; g.gain.value=.045;
+  s.connect(f).connect(g).connect(MUSIC.gain); s.start(); MUSIC.crackle=s;
 }
 function mNote(a, t, freq, dur, type, vol, opts={}){
   const o=a.createOscillator(), g=a.createGain(); o.type=type; o.frequency.setValueAtTime(freq,t);
   if(opts.detune) o.detune.value=opts.detune;
   const att=opts.att||.02; g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(vol,t+att); g.gain.setTargetAtTime(0.0001,t+dur*.6,dur*.25);
-  let out=g; if(opts.lp){ const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=opts.lp; g.connect(f); out=f; }
+  let out=g; if(opts.lp){ const f=a.createBiquadFilter(); f.type='lowpass'; f.frequency.value=opts.lp; if(opts.lpQ) f.Q.value=opts.lpQ; g.connect(f); out=f; }
   o.connect(g); out.connect(MUSIC.gain); if(opts.echo) out.connect(MUSIC.delay);
   o.start(t); o.stop(t+dur+.4);
 }
-function mNoise(a, t, dur, vol, type, freq){
-  const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); s.buffer=MUSIC.noise; f.type=type; f.frequency.value=freq;
+function mNoise(a, t, dur, vol, type, freq, q){
+  const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); s.buffer=MUSIC.noise; f.type=type; f.frequency.value=freq; if(q) f.Q.value=q;
   g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); s.connect(f).connect(g).connect(MUSIC.gain); s.start(t); s.stop(t+dur+.02);
 }
-function mKick(a,t){ const o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(48,t+.16);
-  g.gain.setValueAtTime(.55,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.28); o.connect(g).connect(MUSIC.gain); o.start(t); o.stop(t+.3); }
+function mKick(a,t){ const o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(96,t); o.frequency.exponentialRampToValueAtTime(42,t+.22);
+  g.gain.setValueAtTime(.42,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.36); o.connect(g).connect(MUSIC.gain); o.start(t); o.stop(t+.38); }
+function mSnare(a,t){
+  mNoise(a,t,.16,.14,'bandpass',1800,1.1);
+  const o=a.createOscillator(), g=a.createGain(); o.type='triangle'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(120,t+.08);
+  g.gain.setValueAtTime(.08,t); g.gain.exponentialRampToValueAtTime(0.0001,t+.12); o.connect(g).connect(MUSIC.gain); o.start(t); o.stop(t+.14);
+}
 function musicStep(a, step, t){
   const bar=Math.floor(step/8)%8, e=step%8, ch=M_CHORDS[bar%4];
-  if(e===0) ch.n.forEach((m,i)=>{ mNote(a,t,mHz(m),M_EIGHTH*8,'triangle',.05,{att:.35,lp:1400,detune:i%2?6:-6}); mNote(a,t,mHz(m+12),M_EIGHTH*8,'sine',.018,{att:.5}); });
-  if(e===0||e===3||e===6) mNote(a,t,mHz(ch.b),M_EIGHTH*(e===6?2:3),'sine',.22,{att:.01,lp:500});
-  if(e===0||e===5) mKick(a,t);
-  if(e===2||e===6) mNoise(a,t,.18,.12,'bandpass',1800);           // claquement doux
-  mNoise(a,t,.05,e%2?.025:.04,'highpass',7000);                    // charleston
-  const m=M_MELODY[bar][e]; if(m) mNote(a,t,mHz(m),M_EIGHTH*1.8,'triangle',.07,{att:.015,lp:3200,echo:true});
-  if(e===4 && bar%2===1) mNote(a,t,mHz(ch.n[3]+12),M_EIGHTH,'sine',.03,{echo:true}); // petite clochette
+  if(e===0) ch.n.forEach((m,i)=>{ mNote(a,t,mHz(m),M_EIGHTH*7.4,'triangle',.045,{att:.12,lp:1280,detune:i%2?5:-5}); mNote(a,t,mHz(m+12),M_EIGHTH*7.4,'sine',.014,{att:.2,lp:2200}); });
+  const bass=M_BASS[bar%4][e]; if(bass) mNote(a,t,mHz(bass),M_EIGHTH*(e===3||e===7?1.6:2.2),'sine',.2,{att:.012,lp:420});
+  if(e===0 || (e===4 && bar%2===0) || (e===6 && bar%4===3)) mKick(a,t);
+  if(e===2 || e===6) mSnare(a,t);
+  mNoise(a,t, e===7?.09:.04, e%2?.018:.032, 'highpass', 7500);
+  if(e===5 && bar%2===1) mNoise(a,t,.12,.05,'bandpass',4200,.8);
+  const m=M_MELODY[bar][e]; if(m) mNote(a,t,mHz(m),M_EIGHTH*2.1,'triangle',.055,{att:.02,lp:2600,echo:true});
+  if(e===5 && bar===3) mNote(a,t,mHz(77),M_EIGHTH*1.2,'sine',.025,{echo:true,att:.01}); /* petite clochette originale, une fois par cycle */
+}
+function mBleat(a, t){
+  if(!a||!MUSIC.gain) return;
+  MUSIC.bleats++;
+  const dur=.38+Math.random()*.14, fund=300+Math.random()*40;
+  const f1=a.createBiquadFilter(); f1.type='bandpass'; f1.frequency.value=760; f1.Q.value=5.5;
+  const f2=a.createBiquadFilter(); f2.type='bandpass'; f2.frequency.value=1520; f2.Q.value=4.8;
+  const lp=a.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2600;
+  const env=a.createGain(), amp=a.createGain();
+  const vol=MUSIC.duck?0.035:0.1;
+  env.gain.setValueAtTime(0.0001,t);
+  env.gain.linearRampToValueAtTime(vol,t+.045);
+  env.gain.setTargetAtTime(vol*.75,t+.14,.08);
+  env.gain.setTargetAtTime(0.0001,t+dur*.62,.07);
+  const trem=a.createOscillator(), tg=a.createGain(); trem.frequency.value=8.2; tg.gain.value=.22;
+  amp.gain.value=1; trem.connect(tg).connect(amp.gain);
+  trem.start(t); trem.stop(t+dur+.08);
+  [['sawtooth',0,1],['sawtooth',7,.55],['triangle',-11,.45]].forEach(([type,det,v])=>{
+    const o=a.createOscillator(), og=a.createGain(); o.type=type; o.detune.value=det; og.gain.value=v;
+    o.frequency.setValueAtTime(fund,t);
+    o.frequency.linearRampToValueAtTime(fund*1.16,t+.07);
+    o.frequency.linearRampToValueAtTime(fund*.9,t+dur*.88);
+    const vib=a.createOscillator(), vg=a.createGain(); vib.frequency.value=6.8+Math.random()*1.2; vg.gain.value=14;
+    vib.connect(vg).connect(o.frequency); vib.start(t+.05); vib.stop(t+dur+.08);
+    o.connect(og); og.connect(f1); og.connect(f2);
+    o.start(t); o.stop(t+dur+.1);
+  });
+  f1.connect(lp); f2.connect(lp); lp.connect(env).connect(amp).connect(MUSIC.gain);
+  if(MUSIC.noise){
+    const s=a.createBufferSource(), nf=a.createBiquadFilter(), ng=a.createGain();
+    s.buffer=MUSIC.noise; nf.type='bandpass'; nf.frequency.value=1150; nf.Q.value=2;
+    ng.gain.setValueAtTime(.025,t); ng.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    s.connect(nf).connect(ng).connect(amp); s.start(t); s.stop(t+dur);
+  }
+}
+function bleatWaitMs(){ return (20+Math.random()*25)*1000; }
+function scheduleBleat(){
+  clearTimeout(MUSIC.bleatTimer); MUSIC.bleatTimer=null;
+  if(!MUSIC.on){ MUSIC.bleatAt=0; return; }
+  const wait=bleatWaitMs(); MUSIC.bleatAt=Date.now()+wait;
+  MUSIC.bleatTimer=setTimeout(()=>{
+    const a=actx;
+    if(MUSIC.on && a && !document.hidden && !MUSIC.duck) mBleat(a, a.currentTime+.03);
+    scheduleBleat();
+  }, wait);
 }
 function musicTick(){
   const a=actx; if(!a||!MUSIC.on) return;
-  while(MUSIC.next < a.currentTime+.25){ musicStep(a, MUSIC.step, MUSIC.next); MUSIC.step=(MUSIC.step+1)%64; MUSIC.next+=M_EIGHTH; }
+  while(MUSIC.next < a.currentTime+.25){ musicStep(a, MUSIC.step, MUSIC.next); MUSIC.next+=mStepLen(MUSIC.step); MUSIC.step=(MUSIC.step+1)%64; }
 }
 function musicTarget(){ return MUSIC.duck ? M_DUCK : M_VOL; }
 function musicStart(){
@@ -1224,13 +1363,16 @@ function musicStart(){
   MUSIC.on=true; MUSIC.next=a.currentTime+.08;
   MUSIC.gain.gain.cancelScheduledValues(a.currentTime); MUSIC.gain.gain.setValueAtTime(Math.max(MUSIC.gain.gain.value,0.0001),a.currentTime);
   MUSIC.gain.gain.linearRampToValueAtTime(musicTarget(),a.currentTime+1.5);
-  musicTick(); MUSIC.timer=setInterval(musicTick,60);
+  mCrackle(a); musicTick(); MUSIC.timer=setInterval(musicTick,60); scheduleBleat();
 }
 function musicStop(){
   if(!MUSIC.on) return; MUSIC.on=false; clearInterval(MUSIC.timer); MUSIC.timer=null;
+  clearTimeout(MUSIC.bleatTimer); MUSIC.bleatTimer=null; MUSIC.bleatAt=0;
+  if(MUSIC.crackle){ try{ MUSIC.crackle.stop(); }catch(e){} MUSIC.crackle=null; }
   const a=actx; if(a&&MUSIC.gain){ MUSIC.gain.gain.cancelScheduledValues(a.currentTime); MUSIC.gain.gain.setValueAtTime(MUSIC.gain.gain.value,a.currentTime); MUSIC.gain.gain.linearRampToValueAtTime(0.0001,a.currentTime+.4); }
 }
 function musicDuck(on){ MUSIC.duck=!!on; const a=actx; if(a&&MUSIC.gain&&MUSIC.on){ MUSIC.gain.gain.cancelScheduledValues(a.currentTime); MUSIC.gain.gain.setValueAtTime(MUSIC.gain.gain.value,a.currentTime); MUSIC.gain.gain.linearRampToValueAtTime(musicTarget(),a.currentTime+.3); } }
+function musicBleatNow(){ const a=actx; if(!a||!MUSIC.on) return false; mBleat(a, a.currentTime+.02); return true; }
 // Appelée après un geste de l'utilisateur (clic, touche) : démarre ou arrête selon le réglage.
 function musicSync(){ if(S.settings.music && !document.hidden) musicStart(); else musicStop(); }
 document.addEventListener('visibilitychange', ()=>{ if(document.hidden) musicStop(); else if(S.settings.music && actx) musicStart(); });
@@ -1339,7 +1481,7 @@ function phrase(k){ return pick(PHRASES[k]).replace('{n}', S.name||'toi'); }
    parts : [calque, dessin SVG] — calques : fond, dos, queue, pattes, corps, armL, armR, cou, horns, earL, earR, joue, museau, yeux, front, haut. */
 const SLOTS = { haut:'Haut de tête', front:'Front', oreilleG:'Oreille gauche', oreilleD:'Oreille droite', corneG:'Corne gauche', corneD:'Corne droite',
   yeux:'Yeux', joue:'Joues', museau:'Museau', cou:'Cou', corps:'Corps', dos:'Dos', patteAvant:'Pattes avant', pattes:'Sabots', queue:'Queue', objet:'Objet tenu', fond:'Décor' };
-const CATS = [ ['tete','🎩','Tête'], ['oreilles','🎀','Oreilles & cornes'], ['visage','👓','Visage'], ['cou','🧣','Cou'], ['corps','👕','Corps & dos'], ['pattes','👟','Pattes & queue'], ['objets','🎈','Objets'], ['decors','🌈','Décors'] ];
+const CATS = [ ['tete','🎩','Tête'], ['oreilles','🎀','Oreilles & cornes','Oreilles'], ['visage','👓','Visage'], ['cou','🧣','Cou'], ['corps','👕','Corps & dos','Corps'], ['pattes','👟','Pattes & queue','Pattes'], ['objets','🎈','Objets'], ['decors','🌈','Décors'] ];
 const _O='#6b4a5a';
 function _star(cx,cy,r,ri){ ri=ri||r*.48; let p=''; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, q=i%2?ri:r; p+=(i?'L':'M')+(cx+q*Math.cos(a)).toFixed(1)+','+(cy+q*Math.sin(a)).toFixed(1); } return p+'Z'; }
 function _heart(x,y,s){ return `M${x} ${y+s*.35} C${x-s*.1} ${y-s*.05} ${x-s*.55} ${y-s*.05} ${x-s*.55} ${y-s*.38} C${x-s*.55} ${y-s*.68} ${x-s*.15} ${y-s*.72} ${x} ${y-s*.45} C${x+s*.15} ${y-s*.72} ${x+s*.55} ${y-s*.68} ${x+s*.55} ${y-s*.38} C${x+s*.55} ${y-s*.05} ${x+s*.1} ${y-s*.05} ${x} ${y+s*.35}Z`; }
@@ -1634,7 +1776,7 @@ function screenShop(cat){
     <p style="margin:0"><b>🪙 ${S.coins} pièces</b> · ${owned}/${SHOP.length} accessoires</p>
     <p class="muted" style="margin:4px 0 8px">Les accessoires se combinent s'ils ne prennent pas la même place. Sinon, le nouveau remplace l'ancien.</p>
     <div class="chips" aria-label="Ce que Chèvra porte">${wornChips}</div></div></div>
-  <div class="tabs" role="tablist" aria-label="Rayons de la garde-robe">${CATS.map(([id,e,n])=>`<button class="tab" role="tab" data-go="boutique/${id}" aria-selected="${id===cat}" ${id===cat?'aria-current="true"':''}><span aria-hidden="true">${e}</span> ${n}</button>`).join('')}</div>
+  <div class="tabs" role="tablist" aria-label="Rayons de la garde-robe">${CATS.map(([id,e,n,short])=>`<button class="tab" role="tab" data-go="boutique/${id}" aria-label="${esc(n)}" aria-selected="${id===cat}" ${id===cat?'aria-current="true"':''}><span aria-hidden="true">${e}</span><span class="tab-full" aria-hidden="true"> ${esc(n)}</span><span class="tab-short" aria-hidden="true">${esc(short||n)}</span></button>`).join('')}</div>
   <div class="grid items" role="tabpanel">${items.map(it=>{
     const own=S.owned.includes(it.id), eq=S.wear.includes(it.id);
     const repl=S.wear.filter(w=>accOverlap(w,it.id));
@@ -2233,7 +2375,7 @@ try{ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (
 $$('.brand').forEach(b=>b.addEventListener('click', ()=>go('carte')));
 render();
 // Accès en lecture pour les tests automatiques
-window.__chevra = { get state(){ return S; }, ALLQ, SUBJECTS, checkDictee, srsDue, dailyQuestions, get session(){ return SESSION; }, get music(){ return {on:MUSIC.on, duck:MUSIC.duck, ctx: actx?actx.state:null, gain: MUSIC.gain?MUSIC.gain.gain.value:0}; }, musicDuck, get musicOut(){ return MUSIC.comp; }, chevraHost, dressChevra, ACCESSOIRES, accOverlap, randPick, randKey };
+window.__chevra = { get state(){ return S; }, ALLQ, SUBJECTS, checkDictee, srsDue, dailyQuestions, get session(){ return SESSION; }, get music(){ return {on:MUSIC.on, duck:MUSIC.duck, ctx: actx?actx.state:null, gain: MUSIC.gain?MUSIC.gain.gain.value:0, style:'lofi', bleats:MUSIC.bleats, nextBleatIn: MUSIC.bleatAt?Math.max(0,(MUSIC.bleatAt-Date.now())/1000):null}; }, musicDuck, musicBleatNow, get musicOut(){ return MUSIC.comp; }, chevraHost, dressChevra, ACCESSOIRES, accOverlap, randPick, randKey };
 })();
 
 </script>
