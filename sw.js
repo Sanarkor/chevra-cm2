@@ -1,12 +1,14 @@
 /* Chèvra – cache des icônes et du manifeste. Incrémenter CACHE pour forcer la mise à jour de l'icône d'accueil.
    La page index.html n'est pas mise en cache, pour que les nouvelles questions arrivent tout de suite. */
-const CACHE = 'chevra-icons-v6';
+const CACHE = 'chevra-icons-v7';
 const ASSETS = [
   './manifest.webmanifest',
   './icons/favicon-32.png',
   './icons/favicon-64.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/icon-192-maskable.png',
+  './icons/icon-512-maskable.png',
   './icons/apple-touch-icon.png'
 ];
 self.addEventListener('install', ev => {
