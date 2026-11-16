@@ -592,7 +592,14 @@ body.welcome main{padding:24px calc(16px + var(--safe-r)) calc(32px + var(--safe
      relier   : paires: [["gauche","droite"], …] (4 paires conseillées)
      ordre    : elements: [...] DANS LE BON ORDRE (ils seront mélangés), style: "frise" | "liste" | "mots" | "lettres"
      dictee   : reponse: "mot" (ou ["forme 1","forme 2"] si plusieurs réponses acceptées),
-                ecoute: true pour faire lire le mot à voix haute (synthèse vocale de l'appareil), langue: "fr-FR" ou "en-GB"
+                ecoute: true pour faire lire le mot à voix haute (synthèse vocale de l'appareil), langue: "fr-FR" ou "en-GB",
+                strict: true si l'article ou la forme exacte est l'objet de la question (déterminant, homophone) :
+                  on n'accepte alors pas un déterminant en plus ou en moins.
+                Comparaison : espaces, majuscules, ponctuation finale et apostrophes typographiques sont ignorés.
+                  Un déterminant optionnel (le, la, l', les, un, une, des, du, de la, au, aux, the, a, an) est
+                  accepté, sauf si strict. Accents exigés en français (presque parfait si oubliés), acceptés
+                  manquants dans les autres matières. Nombres : 3,5 / 3.5, espaces des milliers, « en 1792 »,
+                  unité facultative si elle figure dans la question ou la réponse attendue.
      calcul   : question: "7 × 8", reponse: 56 (nombre), temps: secondes (facultatif)
    ===================================================================== */
 const DATA = {
@@ -673,7 +680,7 @@ const DATA = {
         { type: "trou", niveau: 3, question: "Les filles sont ___ au parc.", choix: ["allées", "allé", "allés"], reponse: 0, explication: "Avec l'auxiliaire être, le participe passé s'accorde avec le sujet « les filles » : allées.", sixieme: true },
         { type: "trou", niveau: 3, question: "Nous avons ___ nos parents.", choix: ["aidé", "aidés", "aider"], reponse: 0, explication: "Avec l'auxiliaire avoir, le participe passé ne s'accorde pas avec le sujet : nous avons aidé.", sixieme: true },
         { type: "trou", niveau: 3, question: "Il faut ___ la table.", choix: ["nettoyer", "nettoyé", "nettoyez"], reponse: 0, explication: "Après « il faut », on met l'infinitif. Astuce : remplace par « mordre » → il faut mordre." },
-        { type: "dictee", niveau: 3, question: "Écris au pluriel : un bijou → des …", reponse: "bijoux", explication: "Sept noms en -ou prennent un x au pluriel : bijou, caillou, chou, genou, hibou, joujou, pou." },
+        { type: "dictee", niveau: 3, question: "Écris au pluriel : un bijou → des …", reponse: ["bijoux", "des bijoux", "les bijoux"], explication: "Sept noms en -ou prennent un x au pluriel : bijou, caillou, chou, genou, hibou, joujou, pou.", sid: "francais.orthographe.1m0cwgb" },
         { type: "dictee", niveau: 3, question: "Écoute et écris le mot.", reponse: "aujourd'hui", explication: "« aujourd'hui » s'écrit avec une apostrophe entre le d et le h.", ecoute: true },
         { type: "qcm", niveau: 3, question: "Quelle est la bonne phrase ?", choix: ["Ces dames portent des manteaux marron et des écharpes rouges.", "Ces dames portent des manteaux marrons et des écharpes rouges.", "Ces dames portent des manteaux marron et des écharpes rouge.", "Ces dames portent des manteaux marrons et des écharpes rouge."], reponse: 0, explication: "Les adjectifs de couleur issus d'un nom (marron, orange, or) restent invariables. « rouge » n'est pas un nom d'objet : il s'accorde → rouges." },
         { type: "qcm", niveau: 3, question: "Quelle est la bonne phrase ?", choix: ["Les lettres que j'ai écrites sont parties.", "Les lettres que j'ai écrit sont parties.", "Les lettres que j'ai écris sont parties.", "Les lettres que j'ai écrire sont parties."], reponse: 0, explication: "J'ai écrit quoi ? les lettres (COD avant le verbe, auxiliaire avoir) → écrites." },
@@ -2461,6 +2468,121 @@ function renderRelier(q, el){
   draw();
 }
 
+// Comparaison des réponses saisies (dictée). Utilisé par le jeu et par les tests Node.
+// Tolérances : espaces, casse, ponctuation finale, apostrophes, déterminants optionnels,
+// « en 1792 », virgule/point décimal, espaces des milliers, unité facultative.
+// Accents exigés en français (presque parfait si oubliés) ; acceptés manquants ailleurs.
+// strict:true : pas de tolérance sur les déterminants (l'article est l'objet de la question).
+
+function normBase(s){
+  return String(s)
+    .replace(/\u00a0|\u202f/g,' ')
+    .replace(/[’`´]/g,"'")
+    .replace(/\s+/g,' ')
+    .trim()
+    .replace(/^["«“”»]+|["«“”»]+$/g,'')
+    .replace(/[\s?.!,;:…]+$/g,'')
+    .trim();
+}
+function stripAccents(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/œ/g,'oe').replace(/æ/g,'ae'); }
+
+// Déterminants optionnels. « au » / « a » doivent être un mot entier (pas le début de « aujourd'hui »).
+const ART_RE = /^(?:de\s+la|les|une|des|aux|the|du|au|un|le|la|an|a)(?:\s+|$)/i;
+const L_RE = /^l['’]/i;
+const YEAR_PREFIX = /^(?:en|in|vers|année|annee|l'année|l'annee)\s+/i;
+function startsWithArt(s){ return L_RE.test(s) || ART_RE.test(s); }
+function stripLeadingArt(s){ if(L_RE.test(s)) return s.replace(L_RE,''); return s.replace(ART_RE,''); }
+
+// Unités du programme CM2/6e, les plus longues d'abord pour éviter qu'on prenne « m » dans « min ».
+const UNIT_RE = /^(.*?)(?:\s*(km|hm|dam|dm|cm|mm|kg|hg|dag|dg|cg|mg|mL|ml|cL|cl|dL|dl|hL|hl|daL|dal|min|m²|m2|m³|m3|°C|°F|€|%|m|g|h|s|L|l|°))?\s*$/i;
+function parseAnswerNum(s){
+  let t = normBase(s).replace(YEAR_PREFIX,'');
+  const um = t.match(UNIT_RE);
+  if(!um) return null;
+  const num = um[1].replace(/\s/g,'').replace(',','.');
+  if(!/^[+-]?\d+(\.\d+)?$/.test(num)) return null;
+  let unit = (um[2]||'').toLowerCase().replace('m²','m2').replace('m³','m3');
+  if(unit==='l') unit='L';
+  return {n:parseFloat(num), unit};
+}
+const UNIT_WORDS = {
+  km:['km','kilometre','kilometres'], m:['m','metre','metres'],
+  cm:['cm','centimetre','centimetres'], mm:['mm','millimetre','millimetres'],
+  hm:['hm'], dam:['dam'], dm:['dm'],
+  kg:['kg','kilogramme','kilogrammes'], g:['g','gramme','grammes'],
+  L:['l','litre','litres'], ml:['ml','millilitre','millilitres'], cl:['cl','centilitre','centilitres'],
+  min:['min','minute','minutes'], h:['h','heure','heures'], s:['s','seconde','secondes'],
+  '€':['€','euro','euros'], '%':['%','pourcent'], '°c':['°c','celsius'], '°f':['°f','fahrenheit'],
+  m2:['m2','m²'], m3:['m3','m³']
+};
+function unitInQuestion(unit, q){
+  if(!unit || !q || !q.question) return false;
+  const txt = stripAccents(String(q.question).toLowerCase());
+  const key = (unit==='L'||unit==='l') ? 'L' : String(unit).toLowerCase();
+  const words = UNIT_WORDS[key] || [key];
+  return words.some(w=>{
+    const esc = stripAccents(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return new RegExp('(?:^|[^a-z0-9°])'+esc+'(?:[^a-z0-9°]|$)','i').test(txt);
+  });
+}
+function numsMatch(input, expected, q){
+  const u = parseAnswerNum(input), e = parseAnswerNum(expected);
+  if(!u || !e || Math.abs(u.n-e.n)>1e-9) return false;
+  if(!u.unit || !e.unit){
+    if(u.unit && !e.unit && !unitInQuestion(u.unit, q)) return false;
+    return true;
+  }
+  return u.unit===e.unit;
+}
+function fold(input, expected, strict){
+  let u = normBase(input), e = normBase(expected);
+  u = u.replace(YEAR_PREFIX,'');
+  e = e.replace(YEAR_PREFIX,'');
+  if(!strict){
+    const expArt = startsWithArt(e), userArt = startsWithArt(u);
+    if(!expArt && userArt) u = stripLeadingArt(u);
+    else if(expArt && !userArt) e = stripLeadingArt(e);
+  }
+  return {u, e};
+}
+function capitalNote(expected){
+  const b = normBase(expected);
+  return /[A-Z]/.test(b) ? `Petit détail : on écrit « ${b} » avec une majuscule.` : '';
+}
+
+function checkDictee(input, answers, q){
+  answers=[].concat(answers);
+  const strict = !!(q && q.strict);
+  const accentsRequired = !q || q.accents===true || !q.subj || q.subj==='francais';
+
+  for(const r of answers){
+    const a = normBase(input), b = normBase(r);
+    if(a===b) return {ok:true, note:''};
+    if(a.toLowerCase()===b.toLowerCase()) return {ok:true, note: capitalNote(r)};
+  }
+  for(const r of answers){
+    const {u,e} = fold(input, r, strict);
+    if(u===normBase(input) && e===normBase(r) && u.toLowerCase()===e.toLowerCase()) continue; // déjà traité
+    if(u.toLowerCase()===e.toLowerCase()){
+      const note = capitalNote(r) && u[0]!==e[0] ? capitalNote(r) : '';
+      return {ok:true, note};
+    }
+    if(numsMatch(u, e, q) || numsMatch(input, r, q)) return {ok:true, note:''};
+  }
+  for(const r of answers){
+    const {u,e} = fold(input, r, strict);
+    if(stripAccents(u.toLowerCase())===stripAccents(e.toLowerCase())){
+      if(accentsRequired) return {ok:true, partial:true, note:`Presque parfait ! Attention aux accents : on écrit « ${normBase(r)} ».`};
+      return {ok:true, note:''};
+    }
+  }
+  return {ok:false};
+}
+
+if(typeof module!=='undefined' && module.exports){
+  module.exports = {checkDictee, normBase, stripAccents, parseAnswerNum, startsWithArt, stripLeadingArt};
+}
+
 // --- Remettre dans l'ordre (frise chronologique, lettres, mots d'une phrase)
 function renderOrdre(q, el){
   const sep = q.style==='lettres' ? '' : ' ';
@@ -2484,20 +2606,7 @@ function renderOrdre(q, el){
     answer(ok, ok?'':`Le bon ordre : <span class="ans">${q.elements.map(esc).join(q.style==='lettres'?'':(q.style==='mots'?' ':' → '))}</span>`); };
   draw();
 }
-// --- Dictée : saisie au clavier, comparaison tolérante (espaces, majuscules, apostrophes ; accents signalés)
-function normBase(s){ return String(s).trim().replace(/[’`´]/g,"'").replace(/\s+/g,' ').replace(/\s*([?.!,;:])$/,'$1'); }
-function stripAccents(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/œ/g,'oe').replace(/æ/g,'ae'); }
-function checkDictee(input, answers){
-  answers=[].concat(answers); const a=normBase(input);
-  for(const r of answers){ const b=normBase(r);
-    if(a===b) return {ok:true, note:''};
-    if(a.toLowerCase()===b.toLowerCase()) return {ok:true, note: /[A-Z]/.test(b)? `Petit détail : on écrit « ${b} » avec une majuscule.` : ''};
-  }
-  for(const r of answers){ const b=normBase(r);
-    if(stripAccents(a.toLowerCase())===stripAccents(b.toLowerCase())) return {ok:true, partial:true, note:`Presque parfait ! Attention aux accents : on écrit « ${b} ».`};
-  }
-  return {ok:false};
-}
+// --- Dictée : saisie au clavier (comparaison : voir answers.js)
 let speechVoices=[];
 function loadVoices(){ try{ speechVoices = speechSynthesis.getVoices()||[]; }catch(e){} }
 if('speechSynthesis' in window){ loadVoices(); try{ speechSynthesis.addEventListener('voiceschanged', loadVoices); }catch(e){} }
@@ -2517,7 +2626,7 @@ function renderDictee(q, el){
   if(canSpeak){ $('#listen',el).onclick=()=>{ if(!speak(word, lang)) say('Le son ne marche pas ici : utilise « Voir le mot » !','encourage'); }; }
   if(q.ecoute){ $('#peek',el).onclick=()=>{ const f=$('#flash',el); f.innerHTML=`<div class="flash">${esc(word)}</div>`; $('#peek',el).disabled=true; setTimeout(()=>{ if(!f.isConnected) return; f.innerHTML=''; $('#peek',el).disabled=false; inp.focus(); },3000); }; }
   const submit=()=>{ if(SESSION.answered) return; if(!inp.value.trim()){ inp.focus(); say('Écris ta réponse dans la case !','encourage'); return; }
-    const r=checkDictee(inp.value, q.reponse); inp.disabled=true; $('#check',el).disabled=true; const pk=$('#peek',el); if(pk) pk.disabled=true;
+    const r=checkDictee(inp.value, q.reponse, q); inp.disabled=true; $('#check',el).disabled=true; const pk=$('#peek',el); if(pk) pk.disabled=true;
     inp.style.borderColor = r.ok? '#3cc59a':'#ff8fa7';
     answer(r.ok, r.ok? (r.note||'') : `Tu as écrit « ${esc(inp.value.trim())} ». On écrit : <span class="ans">${esc(word)}</span>`, r.partial? .5 : (r.ok?1:0)); };
   $('#check',el).onclick=submit; inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
