@@ -1,6 +1,6 @@
 /* Chèvra – cache des icônes et du manifeste. Incrémenter CACHE pour forcer la mise à jour de l'icône d'accueil.
    La page index.html n'est pas mise en cache, pour que les nouvelles questions arrivent tout de suite. */
-const CACHE = 'chevra-icons-v4';
+const CACHE = 'chevra-icons-v5';
 const ASSETS = [
   './manifest.webmanifest',
   './icons/favicon-32.png',
@@ -9,7 +9,16 @@ const ASSETS = [
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
   './icons/chevra-mascot-1024.webp',
-  './icons/chevra-mascot-512.webp'
+  './icons/chevra-mascot-512.webp',
+  './icons/acc/hat.webp',
+  './icons/acc/glasses.webp',
+  './icons/acc/flower.webp',
+  './icons/acc/scarf.webp',
+  './icons/acc/tutu.webp',
+  './icons/acc/sneakers-l.webp',
+  './icons/acc/sneakers-r.webp',
+  './icons/acc/balloon.webp',
+  './icons/acc/rainbow.webp'
 ];
 self.addEventListener('install', ev => {
   ev.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
